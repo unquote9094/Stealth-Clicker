@@ -14,6 +14,7 @@ import { createLogger } from '../utils/logger.js';
 import { CONFIG, addJitter } from '../config/config.js';
 import { sleep, randomInt, checkAndRest } from '../utils/randomizer.js';
 import HumanMouse from '../core/HumanMouse.js';
+import IdleBehavior from '../core/IdleBehavior.js';
 
 const log = createLogger('Mine');
 
@@ -102,6 +103,9 @@ export class MineGame {
 
         // 버그 수정: 채굴 전 마지막 댓글 ID 저장 (결과 확인용)
         this.lastCommentId = null;
+
+        // 대기 중 행동 모듈
+        this.idleBehavior = null;
     }
 
     /**
@@ -116,6 +120,9 @@ export class MineGame {
 
         this.mouse = new HumanMouse(this.page);
         await this.mouse.init();
+
+        // 대기 중 행동 모듈 초기화
+        this.idleBehavior = new IdleBehavior(this.page, this.mouse);
 
         // 버그 수정: alert(경고창) 핸들러 등록
         this._registerAlertHandler();
@@ -617,10 +624,15 @@ export class MineGame {
                 onWait(waitTime, waitMinutes, waitSeconds);
             }
 
-            // 대기 (1초 간격으로 체크하여 중단 가능하게)
-            const endTime = Date.now() + waitTime;
-            while (Date.now() < endTime && this.isRunning) {
-                await sleep(1000);
+            // 대기 (사람처럼 마우스 이동하며 대기)
+            if (this.idleBehavior) {
+                await this.idleBehavior.idle(waitTime);
+            } else {
+                // fallback: 단순 대기
+                const endTime = Date.now() + waitTime;
+                while (Date.now() < endTime && this.isRunning) {
+                    await sleep(1000);
+                }
             }
         }
 
