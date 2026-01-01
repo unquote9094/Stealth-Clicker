@@ -165,6 +165,18 @@ export class BrowserEngine {
     }
 
     /**
+     * 현재 페이지 HTML 저장
+     * @param {string} filename - 파일명
+     * @returns {Promise<void>}
+     */
+    async saveHtml(filename = 'page.html') {
+        if (!this.page) return;
+        const html = await this.page.content();
+        fs.writeFileSync(filename, html, 'utf8');
+        log.info(`HTML 저장: ${filename}`);
+    }
+
+    /**
      * 브라우저 종료
      * @returns {Promise<void>}
      */

@@ -284,6 +284,10 @@ export class MineGame {
             return false;
         }
 
+        // 버그 수정: 버튼이 화면에 보이도록 스크롤 + 첫 클릭 준비 시간
+        await mineButton.scrollIntoView();
+        await sleep(randomInt(1000, 2000)); // 추가 대기 (ghost-cursor 초기화 시간)
+
         log.info(`광산 "${aliveMine.name}" 페이지 로드 완료`);
         return true;
     }
@@ -553,16 +557,14 @@ export class MineGame {
 
     /**
      * 다음 채굴까지 대기 시간 (밀리초)
-     * 봇 감지 방지: 300초 ± 20% Jitter (240~360초 범위)
+     * 서버 쿨다운: 300초 → 최소 300초 보장 + 랜덤 추가
      * @returns {number}
      */
     getWaitTime() {
-        const baseDelay = MINE_CONFIG.TOOL_DELAYS[this.currentTool]; // 300000ms
-        // ±20% Jitter 적용 → 240~360초 범위 (매번 다른 대기시간)
-        const jitterPercent = 20;
-        const variation = baseDelay * (jitterPercent / 100);
-        const jitter = (Math.random() * 2 - 1) * variation;
-        return Math.floor(baseDelay + jitter);
+        const baseDelay = MINE_CONFIG.TOOL_DELAYS[this.currentTool]; // 300000ms (300초)
+        // 300초 + 0~60초 랜덤 추가 (300초 미만은 의미 없음)
+        const extraDelay = randomInt(0, 60000);
+        return baseDelay + extraDelay;
     }
 
     /**
