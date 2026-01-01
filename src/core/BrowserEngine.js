@@ -7,9 +7,17 @@
 
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import UserAgent from 'user-agents';
+import fs from 'fs';
+import path from 'path';
+import { createLogger } from '../utils/logger.js';
+import { CONFIG } from '../config/config.js';
 
 // 스텔스 플러그인 적용
 puppeteer.use(StealthPlugin());
+
+// 로거 생성
+const log = createLogger('Browser');
 
 /**
  * 브라우저 설정 옵션
@@ -40,8 +48,12 @@ export class BrowserEngine {
         // 랜덤 뷰포트 생성 (1920x1080 고정 방지)
         const viewport = this._randomViewport();
 
+        // 랜덤 User-Agent 생성
+        const userAgent = new UserAgent({ deviceCategory: 'desktop' });
+        this.currentUserAgent = userAgent.toString();
+
         const defaultOptions = {
-            headless: false, // 디버깅용으로 브라우저 표시
+            headless: CONFIG.DEBUG.HEADLESS,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -53,7 +65,7 @@ export class BrowserEngine {
             defaultViewport: null,
         };
 
-        console.log('🚀 브라우저 실행 중...');
+        log.info('브라우저 실행 중...');
         this.browser = await puppeteer.launch({ ...defaultOptions, ...options });
 
         // 첫 번째 페이지 가져오기
@@ -66,15 +78,58 @@ export class BrowserEngine {
             height: viewport.height,
         });
 
-        // User-Agent 설정 (옵션으로 제공된 경우)
-        if (options.userAgent) {
-            await this.page.setUserAgent(options.userAgent);
-        }
+        // User-Agent 설정 (랜덤)
+        await this.page.setUserAgent(this.currentUserAgent);
 
-        console.log(`   📐 뷰포트: ${viewport.width}x${viewport.height}`);
-        console.log('   ✅ 브라우저 준비 완료');
+        log.info(`뷰포트: ${viewport.width}x${viewport.height}`);
+        log.debug(`User-Agent: ${this.currentUserAgent}`);
+        log.info('브라우저 준비 완료');
 
         return this.page;
+    }
+
+    /**
+     * 쿠키 저장
+     * @returns {Promise<void>}
+     */
+    async saveCookies() {
+        if (!this.page) return;
+
+        const cookies = await this.page.cookies();
+        const cookiePath = path.resolve(CONFIG.PATHS.COOKIES);
+        const dir = path.dirname(cookiePath);
+
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        fs.writeFileSync(cookiePath, JSON.stringify(cookies, null, 2));
+        log.info(`쿠키 저장 완료: ${cookiePath}`);
+    }
+
+    /**
+     * 쿠키 복원
+     * @returns {Promise<boolean>} 성공 여부
+     */
+    async loadCookies() {
+        if (!this.page) return false;
+
+        const cookiePath = path.resolve(CONFIG.PATHS.COOKIES);
+
+        if (!fs.existsSync(cookiePath)) {
+            log.warn('저장된 쿠키 없음');
+            return false;
+        }
+
+        try {
+            const cookies = JSON.parse(fs.readFileSync(cookiePath, 'utf8'));
+            await this.page.setCookie(...cookies);
+            log.info('쿠키 복원 완료');
+            return true;
+        } catch (error) {
+            log.error(`쿠키 복원 실패: ${error.message}`);
+            return false;
+        }
     }
 
     /**
@@ -93,9 +148,9 @@ export class BrowserEngine {
             timeout: 30000,
         };
 
-        console.log(`🌐 이동 중: ${url}`);
+        log.info(`이동 중: ${url}`);
         await this.page.goto(url, { ...defaultOptions, ...options });
-        console.log('   ✅ 페이지 로드 완료');
+        log.info('페이지 로드 완료');
     }
 
     /**
@@ -106,7 +161,7 @@ export class BrowserEngine {
     async screenshot(filename = 'screenshot.png') {
         if (!this.page) return;
         await this.page.screenshot({ path: filename, fullPage: true });
-        console.log(`📸 스크린샷 저장: ${filename}`);
+        log.info(`스크린샷 저장: ${filename}`);
     }
 
     /**
@@ -118,7 +173,7 @@ export class BrowserEngine {
             await this.browser.close();
             this.browser = null;
             this.page = null;
-            console.log('🔒 브라우저 종료');
+            log.info('브라우저 종료');
         }
     }
 
