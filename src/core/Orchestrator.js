@@ -2,18 +2,15 @@
  * Orchestrator.js
  * 통합 스케줄러 - 광산/레이드/다운로드 관리
  * 
- * 동작 흐름:
- * 1. 살아있는 광산 있으면 → 채굴
- * 2. 광산 없으면 (폐광) → 대체 행동
- *    - 레이드 시간이면 → 공격 1회
- *    - 아니면 → 파일 다운로드 (향후)
- * 3. 30분 후 광산 재확인 → 1번으로
+ * 기능 ON/OFF는 CONFIG.FEATURES로 제어
  */
 
 import { createLogger } from '../utils/logger.js';
 import { sleep, randomInt } from '../utils/randomizer.js';
+import { CONFIG } from '../config/config.js';
 import { MineGame } from '../actions/MineGame.js';
 import { MonsterRaid } from '../actions/MonsterRaid.js';
+import { TerminalUI } from '../utils/TerminalUI.js';
 
 const log = createLogger('Orchestrator');
 
@@ -28,6 +25,7 @@ export class Orchestrator {
         this.browserEngine = browserEngine;
         this.mineGame = null;
         this.monsterRaid = null;
+        this.terminalUI = null;
         this.isRunning = false;
 
         // 통계
@@ -44,93 +42,108 @@ export class Orchestrator {
     async init() {
         log.info('통합 스케줄러 초기화 중...');
 
-        // 광산 채굴 모듈
-        this.mineGame = new MineGame(this.browserEngine);
-        await this.mineGame.init();
+        // 광산 채굴 모듈 (FEATURES 확인)
+        if (CONFIG.FEATURES.MINING) {
+            this.mineGame = new MineGame(this.browserEngine);
+            await this.mineGame.init();
+        }
 
-        // 몬스터 레이드 모듈
-        this.monsterRaid = new MonsterRaid(this.browserEngine);
-        await this.monsterRaid.init();
+        // 몬스터 레이드 모듈 (FEATURES 확인)
+        if (CONFIG.FEATURES.RAID) {
+            this.monsterRaid = new MonsterRaid(this.browserEngine);
+            await this.monsterRaid.init();
+        }
+
+        // 터미널 UI
+        this.terminalUI = new TerminalUI();
 
         log.info('통합 스케줄러 준비 완료');
     }
 
     /**
      * 메인 루프 시작
-     * @param {Object} options
-     * @param {number} options.dailyMiningGoal - 하루 채굴 목표 (0 = 무제한)
      */
     async start(options = {}) {
-        const { dailyMiningGoal = 0 } = options;
+        const dailyMiningGoal = options.dailyMiningGoal || CONFIG.GOALS.DAILY_MINING_COUNT;
         this.isRunning = true;
 
+        // 터미널 UI 시작
+        this.terminalUI.start();
+        this._updateUI('시작 중...');
+
         log.info('=== 통합 스케줄러 시작 ===');
-        if (dailyMiningGoal > 0) {
-            log.info(`하루 목표: ${dailyMiningGoal}회 채굴`);
-        }
 
         while (this.isRunning) {
             try {
-                // 1. 살아있는 광산 확인
-                const mineFound = await this._tryMining();
+                // 1. 채굴 (MINING ON일 때만)
+                if (CONFIG.FEATURES.MINING) {
+                    const mineFound = await this._tryMining();
 
-                if (!mineFound) {
-                    // 2. 광산 없으면 대체 행동
+                    if (!mineFound) {
+                        // 2. 광산 없으면 대체 행동
+                        await this._doAlternativeActions();
+                    }
+
+                    // 목표 달성 확인
+                    if (dailyMiningGoal > 0 && this.mineGame?.mineCount >= dailyMiningGoal) {
+                        this._updateUI('🎯 목표 달성!');
+                        log.info(`🎯 하루 목표 달성! (${dailyMiningGoal}회)`);
+                        break;
+                    }
+                } else {
+                    // 채굴 OFF면 대체 행동만
                     await this._doAlternativeActions();
-                }
-
-                // 목표 달성 확인
-                if (dailyMiningGoal > 0 && this.mineGame.mineCount >= dailyMiningGoal) {
-                    log.info(`🎯 하루 목표 달성! (${dailyMiningGoal}회)`);
-                    break;
                 }
 
             } catch (error) {
                 log.error(`오류 발생: ${error.message}`);
-                await sleep(60000); // 1분 대기 후 재시도
+                this._updateUI('⚠️ 오류 - 1분 후 재시도');
+                await sleep(60000);
             }
         }
 
+        this.terminalUI.stop();
         log.info('=== 통합 스케줄러 종료 ===');
         this._printStats();
     }
 
     /**
      * 광산 채굴 시도
-     * @returns {Promise<boolean>} 광산 있으면 true
      * @private
      */
     async _tryMining() {
-        log.info('📍 살아있는 광산 확인 중...');
+        this._updateUI('📍 광산 확인 중...');
 
         const success = await this.mineGame.autoNavigateToAliveMine();
 
         if (!success) {
-            log.info('❌ 살아있는 광산 없음 (폐광됨)');
+            this._updateUI('❌ 광산 없음 (폐광)');
             return false;
         }
 
-        // 채굴 1회 수행
-        log.info('⛏️ 채굴 시작...');
+        // 현재 광산 이름 업데이트
+        const mineName = '아오지 탄광'; // TODO: 실제 이름 가져오기
+        this.terminalUI.update({ currentMine: mineName });
+
+        // 채굴 수행
+        this._updateUI('⛏️ 채굴 중...');
         const result = await this.mineGame.mineOnce();
 
         if (result.success) {
             this.stats.miningReward += result.reward;
-            log.info(`✅ 채굴 성공! +${result.reward} MP (총 ${this.stats.miningReward} MP)`);
+            this.terminalUI.updateMining(
+                this.mineGame.mineCount,
+                this.stats.miningReward
+            );
         }
 
         // 대기 시간
         const waitTime = this.mineGame.getWaitTime();
-        const waitMin = Math.floor(waitTime / 60000);
-        const waitSec = Math.floor((waitTime % 60000) / 1000);
-        log.info(`⏳ 다음 채굴까지 ${waitMin}분 ${waitSec}초`);
+        this._updateUI('⏳ 대기 중');
+        this.terminalUI.updateWait(waitTime);
 
-        // 대기 중 IdleBehavior 사용
-        if (this.mineGame.idleBehavior) {
-            await this.mineGame.idleBehavior.idle(waitTime);
-        } else {
-            await sleep(waitTime);
-        }
+        // 대기 (UI 갱신 포함)
+        await this._waitWithUIUpdate(waitTime);
 
         return true;
     }
@@ -140,44 +153,70 @@ export class Orchestrator {
      * @private
      */
     async _doAlternativeActions() {
-        log.info('🔄 대체 행동 시작 (최대 30분 대기)');
+        this._updateUI('🔄 대체 행동 중...');
 
-        const maxWait = 30 * 60 * 1000; // 30분
+        const maxWait = 30 * 60 * 1000;
         const endTime = Date.now() + maxWait;
 
         while (Date.now() < endTime && this.isRunning) {
-            // 레이드 시간 확인
-            if (this.monsterRaid.isRaidTime()) {
-                log.info('⚔️ 레이드 시간! 공격 시도...');
+            // 레이드 (RAID ON일 때만)
+            if (CONFIG.FEATURES.RAID && this.monsterRaid?.isRaidTime()) {
+                this._updateUI('⚔️ 레이드 공격!');
                 const result = await this.monsterRaid.attackOnce();
 
                 if (result.success) {
                     this.stats.raidReward += result.reward;
-                    log.info(`✅ 레이드 공격 성공! +${result.reward} 포인트`);
+                    this.terminalUI.updateRaid(
+                        this.monsterRaid.attackCount,
+                        this.stats.raidReward
+                    );
                 }
 
-                // 레이드 후 5분 대기 (다시 광산 확인)
                 await sleep(5 * 60 * 1000);
                 break;
             }
 
-            // TODO: 파일 다운로드 (향후 구현)
-            // if (this.downloader) {
-            //     await this.downloader.downloadOne();
-            // }
+            // TODO: 다운로드 (DOWNLOAD ON일 때만)
+            // if (CONFIG.FEATURES.DOWNLOAD && this.downloader) { ... }
 
-            // 5분마다 광산 재확인
-            log.info('💤 5분 대기 후 광산 재확인...');
-            await sleep(5 * 60 * 1000);
+            // 5분 대기 후 광산 재확인
+            this._updateUI('💤 5분 대기...');
+            await this._waitWithUIUpdate(5 * 60 * 1000);
 
-            // 광산 확인
-            await this.mineGame.navigateToMineList();
-            const aliveMine = await this.mineGame.findAliveMine();
-            if (aliveMine) {
-                log.info('✅ 새 광산 발견!');
-                break;
+            // 광산 확인 (MINING ON일 때만)
+            if (CONFIG.FEATURES.MINING) {
+                await this.mineGame.navigateToMineList();
+                const aliveMine = await this.mineGame.findAliveMine();
+                if (aliveMine) {
+                    this._updateUI('✅ 새 광산 발견!');
+                    break;
+                }
             }
         }
+    }
+
+    /**
+     * UI 갱신하면서 대기
+     * @private
+     */
+    async _waitWithUIUpdate(durationMs) {
+        const endTime = Date.now() + durationMs;
+
+        while (Date.now() < endTime && this.isRunning) {
+            const remaining = endTime - Date.now();
+            this.terminalUI.updateWait(remaining);
+            await sleep(1000);
+        }
+
+        this.terminalUI.updateWait(0);
+    }
+
+    /**
+     * UI 상태 업데이트 헬퍼
+     * @private
+     */
+    _updateUI(status) {
+        this.terminalUI.update({ status });
     }
 
     /**
@@ -186,6 +225,7 @@ export class Orchestrator {
     stop() {
         this.isRunning = false;
         if (this.mineGame) this.mineGame.stop();
+        if (this.terminalUI) this.terminalUI.stop();
         log.info('스케줄러 중지 요청됨');
     }
 
@@ -194,12 +234,13 @@ export class Orchestrator {
      * @private
      */
     _printStats() {
-        log.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        log.info('📊 최종 통계:');
-        log.info(`   채굴: ${this.mineGame?.mineCount || 0}회, ${this.stats.miningReward} MP`);
-        log.info(`   레이드: ${this.monsterRaid?.attackCount || 0}회, ${this.stats.raidReward} 포인트`);
-        log.info(`   다운로드: ${this.stats.downloadCount}개`);
-        log.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('\n');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        console.log('📊 최종 통계:');
+        console.log(`   채굴: ${this.mineGame?.mineCount || 0}회, ${this.stats.miningReward} MP`);
+        console.log(`   레이드: ${this.monsterRaid?.attackCount || 0}회, ${this.stats.raidReward} 포인트`);
+        console.log(`   다운로드: ${this.stats.downloadCount}개`);
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     }
 
     /**

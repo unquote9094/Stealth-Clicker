@@ -6,23 +6,40 @@
  */
 
 export const CONFIG = {
+    // ===== 기능 ON/OFF =====
+    FEATURES: {
+        MINING: true,      // 채굴 기능
+        RAID: true,        // 몬스터 레이드
+        DOWNLOAD: false,   // 파일 다운로드 (10레벨+10일 필요)
+    },
+
+    // ===== 목표 설정 =====
+    GOALS: {
+        DAILY_FILES: 100,           // 하루 다운로드 목표
+        // 자동 계산: 100파일 × 100MP = 10,000MP 필요
+        // 채굴 1회당 평균 170MP → 약 60회 필요
+        DAILY_MINING_COUNT: 60,     // 하루 채굴 목표 (회)
+    },
+
     // ===== 사이트 설정 =====
     SITE: {
-        // 타겟 도메인 패턴
         DOMAINS: ['booktoki', 'newtoki'],
-        // 기본 URL (숫자는 바뀔 수 있음)
-        BASE_URL: 'https://booktoki469.com',
+        BASE_URL: 'https://newtoki469.com',
     },
 
     // ===== 타이밍 설정 =====
     TIMING: {
-        // 광산 채굴 대기 시간 (밀리초)
-        MINE_COOLDOWN: 300 * 1000, // 300초 = 5분
+        // 채굴 쿨다운 (밀리초)
+        MINE_COOLDOWN: 300 * 1000,  // 300초
+        MINE_EXTRA: {
+            MIN: 0,
+            MAX: 100 * 1000,  // 0~100초 추가 → 300~400초
+        },
 
         // 다운로드 간격 (밀리초)
         DOWNLOAD_DELAY: {
-            MIN: 30 * 1000,  // 최소 30초
-            MAX: 60 * 1000,  // 최대 60초
+            MIN: 30 * 1000,
+            MAX: 60 * 1000,
         },
 
         // 클릭 전 대기 (밀리초)
@@ -34,73 +51,59 @@ export const CONFIG = {
         // 페이지 전환 후 대기 (밀리초)
         PAGE_LOAD_DELAY: {
             MIN: 2000,
-            MAX: 4000,
+            MAX: 5000,  // 2~5초로 확장
         },
 
         // 휴식 간격 (밀리초)
-        REST_INTERVAL: 30 * 60 * 1000, // 30분마다
+        REST_INTERVAL: 30 * 60 * 1000,  // 30분마다
         REST_DURATION: {
-            MIN: 3 * 60 * 1000,  // 최소 3분 휴식
-            MAX: 7 * 60 * 1000,  // 최대 7분 휴식
+            MIN: 3 * 60 * 1000,   // 3분
+            MAX: 7 * 60 * 1000,   // 7분
         },
     },
 
     // ===== 스케줄 설정 =====
     SCHEDULE: {
-        // 운영 시간 (24시간 형식)
         ACTIVE_HOURS: {
-            START: 8,  // 08:00 시작
-            END: 24,   // 24:00 (자정) 종료
+            START: 8,   // 08:00 시작
+            END: 24,    // 24:00 종료
         },
-
-        // 하루 다운로드 제한
-        DAILY_DOWNLOAD_LIMIT: 50,
     },
 
     // ===== 마우스 설정 =====
     MOUSE: {
-        // 클릭 좌표 랜덤 오프셋 (픽셀)
         CLICK_OFFSET: {
             MIN: -10,
             MAX: 10,
         },
-
-        // 마우스 이동 속도 (ghost-cursor용)
-        MOVE_SPEED: {
-            MIN: 1,
-            MAX: 3,
-        },
     },
 
-    // ===== 파일 저장 경로 =====
+    // ===== 파일 경로 =====
     PATHS: {
-        DOWNLOADS: './downloads',       // 다운로드 파일 저장
-        LOGS: './logs',                 // 로그 파일
-        COOKIES: './data/cookies.json', // 쿠키 저장
-        PROGRESS: './data/progress.json', // 진행 상황 저장
+        DOWNLOADS: './downloads',
+        LOGS: './logs',
+        COOKIES: './data/cookies.json',
+        PROGRESS: './data/progress.json',
+        HISTORY: './data/history.json',
     },
 
-    // ===== 디버그 설정 =====
+    // ===== 디버그 =====
     DEBUG: {
-        HEADLESS: false,  // 브라우저 표시 (디버깅용)
-        SCREENSHOTS: true, // 에러 시 스크린샷 저장
+        HEADLESS: false,
+        SCREENSHOTS: true,
+        TERMINAL_UI: true,  // 터미널 UI 사용
     },
 };
 
 /**
- * 랜덤 범위 내 값 반환 (밀리초)
- * @param {{MIN: number, MAX: number}} range - 범위 객체
- * @returns {number} 랜덤 값
+ * 랜덤 범위 내 값 반환
  */
 export function getRandomDelay(range) {
     return Math.floor(Math.random() * (range.MAX - range.MIN + 1)) + range.MIN;
 }
 
 /**
- * Jitter 추가 (±10~20%)
- * @param {number} value - 기본값
- * @param {number} percent - 변동 퍼센트 (기본 15%)
- * @returns {number} Jitter 적용된 값
+ * Jitter 추가 (±%)
  */
 export function addJitter(value, percent = 15) {
     const variation = value * (percent / 100);
