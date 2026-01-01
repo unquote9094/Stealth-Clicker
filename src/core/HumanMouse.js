@@ -68,13 +68,22 @@ export class HumanMouse {
             // 클릭 전 랜덤 딜레이
             await randomClickDelay();
 
-            // ghost-cursor로 자연스럽게 클릭
-            await this.cursor.click(selector);
+            // 버튼 위치 + 랜덤 오프셋 계산 (정중앙 클릭 방지!)
+            const box = await element.boundingBox();
+            if (box) {
+                const pos = randomClickPosition(box);  // ±10px 오프셋
+                await this.cursor.moveTo({ x: pos.x, y: pos.y });
+                await this.page.mouse.click(pos.x, pos.y);
+                log.debug(`클릭: ${selector} (${Math.round(pos.x)}, ${Math.round(pos.y)})`);
+            } else {
+                // boundingBox 못 구하면 기본 클릭
+                await this.cursor.click(selector);
+                log.debug(`클릭: ${selector} (기본)`);
+            }
 
             // 클릭 후 짧은 딜레이
             await sleep(50 + Math.random() * 100);
 
-            log.debug(`클릭: ${selector}`);
             return true;
         } catch (error) {
             log.error(`클릭 실패 (${selector}): ${error.message}`);
