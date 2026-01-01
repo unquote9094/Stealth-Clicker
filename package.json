@@ -1,0 +1,13 @@
+{
+  "name": "stealth-clicker",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Stealth-Clicker 프로젝트",
+  "main": "index.js",
+  "scripts": {
+    "start-task": "node scripts/start-task.js",
+    "finish": "node scripts/finish-task.js",
+    "sync-issues": "node scripts/sync-issues.js",
+    "test": "node scripts/test_sanity.js"
+  }
+}

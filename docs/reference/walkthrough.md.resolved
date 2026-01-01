@@ -1,0 +1,77 @@
+# ✅ Phase 0 완료 보고
+
+> **생성일**: 2026-01-02 00:05
+
+---
+
+## 📋 완료된 작업
+
+### 1. 전역 프로젝트 템플릿 생성
+
+**위치**: `E:\DEVz\_templates\project-template\`
+
+| 폴더/파일 | 설명 |
+|:---|:---|
+| [.agent/constitution.md](file:///e:/DEVz/02_NewToKi_Miner/ver001/_project-template/.agent/constitution.md) | 핵심 규칙 (GitHub Issue 중심, 이슈 작성 규칙, 핸드오버) |
+| `.agent/workflows/` | start-task.md, finish-task.md, handover.md |
+| `.gemini/GEMINI.md` | 워크스페이스 규칙 |
+| `docs/ISSUES.md` | GitHub Issue 미러 (읽기 전용) |
+| `docs/SHELL_GUIDE.md` | 터미널 먹통 방지 가이드 |
+| `scripts/` | start-task.js, finish-task.js, sync-issues.js, test_sanity.js |
+| `init-project.js` | **부트스트랩 스크립트** |
+
+---
+
+### 2. Stealth-Clicker 프로젝트 초기화
+
+**명령어**: `node _project-template\init-project.js "Stealth-Clicker"`
+
+**생성된 구조**:
+```
+e:\DEVz\02_NewToKi_Miner\ver001\
+├── .agent/                    # AI 에이전트 규칙
+├── .gemini/                   # 워크스페이스 설정
+├── docs/
+│   ├── ISSUES.md             # GitHub Issue 미러
+│   ├── SHELL_GUIDE.md        # 터미널 가이드
+│   └── reference/            # 이전 프로젝트 참고 문서 (20개)
+├── scripts/                   # 자동화 스크립트
+├── src/                       # (비어있음, Phase 1에서 구현)
+├── package.json              # 프로젝트 설정
+└── _project-template/        # 템플릿 원본 (복사 완료)
+```
+
+---
+
+### 3. 핵심 규칙 요약
+
+| 규칙 | 설명 |
+|:---|:---|
+| **이슈 번호 필수** | 커밋 시 `#N` 없으면 **차단** |
+| **이슈 상세 작성** | 한줄 요약 + 관련 파일 + 진행 기록 필수 |
+| **핸드오버** | 스텝 300~400 시 `HANDOVER.md` 작성 |
+| **gh 명령** | `command_status` 호출 **스킵** (먹통 방지) |
+
+---
+
+## 📌 다음 단계
+
+```bash
+# 1. Git 초기화
+git init
+
+# 2. GitHub 저장소 생성
+gh repo create Stealth-Clicker --public --source=. --remote=origin --push
+
+# 3. 첫 번째 이슈 생성 (Phase 1)
+npm run start-task -- feat "Puppeteer + Stealth 환경 구축"
+```
+
+---
+
+## 🔄 새 프로젝트 시작 시 (앞으로)
+
+```bash
+cd 새프로젝트폴더
+node E:\DEVz\_templates\project-template\init-project.js "프로젝트명"
+```

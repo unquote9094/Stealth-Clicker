@@ -1,0 +1,172 @@
+# 🛠️ 프로젝트 워크플로우 근본 해결책
+
+> **핵심 문제**: start/finish 까먹음, 이슈 단편적, 새 프로젝트 반복 작업
+
+---
+
+## 🎯 해결책 개요
+
+| 문제 | 해결책 |
+|:---|:---|
+| start/finish 까먹음 | **자동 감지 + 강제 훅(Hook)** |
+| 이슈 내용 단편적 | **이슈 작성 규칙 + 템플릿 강제** |
+| 새 프로젝트 반복 작업 | **전역 프로젝트 템플릿 (부트스트랩)** |
+| 이전/새 문서 혼재 | **명확한 폴더 분리** |
+
+---
+
+## 💡 해결책 1: 전역 프로젝트 템플릿 (Project Bootstrap)
+
+> [!IMPORTANT]
+> **한 번만 만들어두면**, 새 프로젝트 시작 시 **한 줄 명령**으로 모든 설정 완료!
+
+### 구조
+```
+C:\Users\HKYi\.gemini\project-template\
+├── .agent/
+│   ├── constitution.md       # 핵심 규칙 (불변)
+│   └── workflows/
+│       ├── start-task.md
+│       ├── finish-task.md
+│       └── handover.md
+├── .gemini/
+│   └── GEMINI.md             # 워크스페이스 규칙
+├── docs/
+│   ├── ISSUES.md             # GitHub Issue 미러
+│   ├── HANDOVER.md           # 세션 인계
+│   └── SHELL_GUIDE.md        # 터미널 가이드
+├── scripts/
+│   ├── start-task.js
+│   ├── finish-task.js
+│   └── sync-issues.js
+└── package.json.template     # 템플릿 (프로젝트명 치환용)
+```
+
+### 사용법
+```bash
+# 새 프로젝트 시작
+npx init-my-project "Stealth-Clicker" 
+# → 템플릿 복사 + 프로젝트명 치환 + git init + GitHub repo 생성
+```
+
+---
+
+## 💡 해결책 2: 작업 강제 훅 (Auto-Enforcement)
+
+### 문제
+- start-task를 까먹음 → 이슈 없이 작업 시작
+- finish-task를 안 함 → GitHub 동기화 안 됨
+
+### 해결: Git Hook 자동 감지
+
+```
+[pre-commit hook]
+1. 스테이지된 파일 감지
+2. 활성 이슈가 없으면 → ⚠️ 경고 (선택적 차단)
+3. 커밋 메시지에 #N 없으면 → ❌ 차단
+
+[post-commit hook]
+1. 커밋 완료 후 자동 push
+2. gh issue comment 자동 (진행 상황 기록)
+```
+
+### AI 에이전트용 강제 규칙
+```markdown
+# CONSTITUTION (절대 규칙)
+
+## 작업 시작 시
+1. GitHub에 열린 이슈 확인
+2. 없으면 → 이슈 먼저 생성
+3. 이슈 번호 없이 코드 수정 금지
+
+## 작업 완료 시
+1. finish-task 실행 (또는 직접 commit + push)
+2. gh 명령 후 command_status 스킵
+3. 이슈 코멘트로 진행 상황 기록
+```
+
+---
+
+## 💡 해결책 3: 이슈 작성 규칙 (Issue Quality Standard)
+
+> [!CAUTION]
+> **절대 규칙**: 오랜만에 봐도, 다른 사람이 봐도 이해 가능해야 함!
+
+### 이슈 템플릿 (강제)
+
+```markdown
+## 📋 한줄 요약 (TL;DR)
+(비개발자도 이해할 수 있는 설명)
+
+## 🔍 상세 설명
+### 문제/목표
+(무엇이 문제인지, 무엇을 원하는지)
+
+### 재현 방법 (버그인 경우)
+1. 단계 1
+2. 단계 2
+3. → 문제 발생!
+
+### 기대 결과
+(정상 동작 시 어떻게 되어야 하는지)
+
+## 📂 관련 파일
+- [파일명.js](파일 링크) - 설명
+
+## ✅ 완료 조건
+- [ ] 체크리스트 1
+- [ ] 체크리스트 2
+
+## 📝 진행 기록
+| 날짜 | 내용 |
+|:---|:---|
+| 2026-01-01 | 이슈 생성 |
+```
+
+### 규칙
+1. **한줄 요약 필수** - 핵심만 한 문장으로
+2. **관련 파일 링크 필수** - 나중에 찾기 쉽게
+3. **진행 기록 필수** - 언제 무엇을 했는지
+4. **완료 조건 체크리스트 필수** - 끝났는지 명확히
+
+---
+
+## 💡 해결책 4: 문서 분리 구조
+
+```
+docs/
+├── reference/               # [읽기 전용] 이전 프로젝트 참고용
+│   ├── bookrabbit/         # BookRabbit 문서들
+│   └── templates/          # 템플릿 원본
+├── ISSUES.md               # GitHub Issue 미러 (자동 동기화)
+├── HANDOVER.md             # 세션 인계
+└── SHELL_GUIDE.md          # 터미널 가이드
+```
+
+---
+
+## 📝 Proposed Changes (이 프로젝트용)
+
+### Phase 0: 전역 템플릿 생성
+
+| 파일 | 위치 | 설명 |
+|:---|:---|:---|
+| [NEW] | `C:\Users\HKYi\.gemini\project-template\` | 전역 프로젝트 템플릿 |
+| [NEW] | `C:\Users\HKYi\.gemini\init-project.js` | 부트스트랩 스크립트 |
+
+### Phase 1: 이 프로젝트 설정
+
+| 파일 | 위치 | 설명 |
+|:---|:---|:---|
+| [NEW] | `.agent/constitution.md` | 핵심 규칙 |
+| [NEW] | `.agent/workflows/*.md` | 워크플로우 3개 |
+| [NEW] | `docs/reference/` | 이전 프로젝트 참고 문서 |
+| [COPY] | `doc/*.md` → `docs/reference/bookrabbit/` | 기존 문서 이동 |
+
+---
+
+## ❓ 결정 필요 사항
+
+1. **전역 템플릿 위치**: `C:\Users\HKYi\.gemini\project-template\` 괜찮나요?
+2. **부트스트랩 명령어**: `npx init-my-project` vs `npm run init-project`?
+3. **이슈 강제**: 이슈 없이 커밋 시 **차단** vs **경고만**?
