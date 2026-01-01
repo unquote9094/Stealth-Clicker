@@ -150,7 +150,12 @@ export class BrowserEngine {
 
         log.info(`이동 중: ${url}`);
         await this.page.goto(url, { ...defaultOptions, ...options });
-        log.info('페이지 로드 완료');
+
+        // 사람처럼: 페이지 로드 후 2~5초 랜덤 대기
+        const delay = Math.floor(Math.random() * 3000) + 2000;
+        await new Promise(r => setTimeout(r, delay));
+
+        log.info(`페이지 로드 완료 (${(delay / 1000).toFixed(1)}초 대기)`);
     }
 
     /**

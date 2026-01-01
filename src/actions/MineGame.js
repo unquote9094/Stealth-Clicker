@@ -562,8 +562,8 @@ export class MineGame {
      */
     getWaitTime() {
         const baseDelay = MINE_CONFIG.TOOL_DELAYS[this.currentTool]; // 300000ms (300초)
-        // 300초 + 0~60초 랜덤 추가 (300초 미만은 의미 없음)
-        const extraDelay = randomInt(0, 60000);
+        // 300초 + 0~100초 랜덤 추가 → 300~400초 범위
+        const extraDelay = randomInt(0, 100000);
         return baseDelay + extraDelay;
     }
 
