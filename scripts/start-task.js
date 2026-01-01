@@ -18,7 +18,7 @@ function log(msg, color = colors.reset) {
 function run(command) {
     try {
         log(`> ${command}`, colors.yellow);
-        return execSync(command, { 
+        return execSync(command, {
             encoding: 'utf8',
             env: { ...process.env, GH_PAGER: '', PAGER: 'cat', CI: 'true' }
         }).trim();
@@ -64,36 +64,55 @@ function main() {
         log('📜 [AGENT CONSTITUTION] Loading...', colors.yellow);
     }
 
-    // 이슈 본문 템플릿
-    const issueBody = `## 📋 한줄 요약 (TL;DR)
-(비개발자도 이해할 수 있는 설명)
+    // 타입별 이슈 본문 생성
+    const today = new Date().toISOString().split('T')[0];
+
+    let issueBody;
+    if (type === 'bug' || type === 'fix') {
+        issueBody = `## 📋 한줄 요약
+${title}
 
 ## 🔍 상세 설명
-### 문제/목표
-(무엇이 문제인지, 무엇을 원하는지)
+### 문제 상황
+- (어떤 문제가 발생하는지 설명)
 
-### 재현 방법 (버그인 경우)
-1. 단계 1
-2. 단계 2
+### 재현 방법
+1. (단계 1)
+2. (단계 2)
 3. → 문제 발생!
 
 ### 기대 결과
-(정상 동작 시 어떻게 되어야 하는지)
-
-## 📂 관련 파일
-- (파일 링크 추가)
+- (정상 동작 시 어떻게 되어야 하는지)
 
 ## ✅ 완료 조건
-- [ ] 체크리스트 1
-- [ ] 체크리스트 2
+- [ ] 버그 수정
+- [ ] 테스트 통과
 
 ## 📝 진행 기록
 | 날짜 | 내용 |
 |:---|:---|
-| ${new Date().toISOString().split('T')[0]} | 이슈 생성 |
+| ${today} | 이슈 생성 |`;
+    } else {
+        // feat, enhance
+        issueBody = `## 📋 한줄 요약
+${title}
 
----
-*이슈 생성: scripts/start-task.js*`;
+## 🔍 상세 설명
+### 목표
+- (무엇을 구현/개선하는지)
+
+### 구현 내용
+- (예정된 구현 내용)
+
+## ✅ 완료 조건
+- [ ] 구현 완료
+- [ ] 테스트 통과
+
+## 📝 진행 기록
+| 날짜 | 내용 |
+|:---|:---|
+| ${today} | 이슈 생성 |`;
+    }
 
     // 임시 파일로 body 저장 (PowerShell 호환)
     const tempBodyPath = path.join(process.cwd(), '.issue_body_temp.md');
