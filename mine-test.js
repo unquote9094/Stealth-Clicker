@@ -17,6 +17,7 @@
 
 import { BrowserEngine } from './src/core/BrowserEngine.js';
 import { MineGame, MINE_TOOLS } from './src/actions/MineGame.js';
+import { CONFIG } from './src/config/config.js';
 import readline from 'readline';
 
 let engine = null;
@@ -32,11 +33,11 @@ async function main() {
         // 2. 쿠키 복원 시도
         const cookiesLoaded = await engine.loadCookies();
 
-        // 3. 뉴토끼 메인 페이지로 이동 (도메인 숫자 변경 가능)
+        // 3. 뉴토끼 메인 페이지로 이동
         console.log('\n📌 뉴토끼 사이트로 이동 중...');
-        console.log('   (도메인 숫자가 변경되었다면 직접 입력하세요)\n');
+        console.log('   (도메인 변경은 .env 파일에서 설정)\n');
 
-        await engine.goto('https://newtoki469.com');
+        await engine.goto(CONFIG.SITE.BASE_URL);
 
         // 4. MineGame 초기화
         mineGame = new MineGame(engine);

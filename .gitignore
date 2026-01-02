@@ -21,3 +21,4 @@ logs/
 downloads/
 data/
 test-result.png
+.env

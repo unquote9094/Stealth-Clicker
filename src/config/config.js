@@ -5,7 +5,15 @@
  * 모든 설정은 여기서 관리하여 유지보수 용이
  */
 
+import 'dotenv/config';
+
 export const CONFIG = {
+    // ===== 로그인 정보 (.env에서 읽기) =====
+    AUTH: {
+        ID: process.env.NEWTOKI_ID || '',
+        PW: process.env.NEWTOKI_PW || '',
+    },
+
     // ===== 기능 ON/OFF =====
     FEATURES: {
         MINING: true,      // 채굴 기능
@@ -21,10 +29,15 @@ export const CONFIG = {
         DAILY_MINING_COUNT: 60,     // 하루 채굴 목표 (회)
     },
 
-    // ===== 사이트 설정 =====
+    // ===== 사이트 설정 (.env에서 읽기) =====
     SITE: {
         DOMAINS: ['booktoki', 'newtoki'],
-        BASE_URL: 'https://newtoki469.com',
+        // 뉴토끼: 광산/레이드 (게임)
+        NEWTOKI_URL: `https://${process.env.NEWTOKI_DOMAIN || 'newtoki469.com'}`,
+        // 북토끼: 파일 다운로드 (자료실)
+        BOOKTOKI_URL: `https://${process.env.BOOKTOKI_DOMAIN || 'booktoki469.com'}`,
+        // 기본 URL (레거시 호환)
+        get BASE_URL() { return this.NEWTOKI_URL; },
     },
 
     // ===== 타이밍 설정 =====

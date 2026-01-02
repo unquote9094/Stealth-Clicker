@@ -182,6 +182,69 @@ export class BrowserEngine {
     }
 
     /**
+     * 로그인 수행
+     * @returns {Promise<boolean>} 성공 여부
+     */
+    async login() {
+        const { ID, PW } = CONFIG.AUTH;
+
+        if (!ID || !PW) {
+            log.warn('로그인 정보 없음 (.env 파일에 NEWTOKI_ID, NEWTOKI_PW 설정 필요)');
+            return false;
+        }
+
+        try {
+            const loginUrl = `${CONFIG.SITE.BASE_URL}/bbs/login.php`;
+            log.info('로그인 페이지 이동...');
+            await this.goto(loginUrl);
+
+            // ID 입력
+            await this.page.waitForSelector('#mb_id', { timeout: 5000 });
+            await this.page.type('#mb_id', ID, { delay: 50 });
+
+            // PW 입력
+            await this.page.type('#mb_password', PW, { delay: 50 });
+
+            // 로그인 버튼 클릭
+            await this.page.click('button[type="submit"]');
+
+            // 페이지 이동 대기
+            await this.page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 });
+
+            // 로그인 성공 확인 (로그아웃 버튼 존재 여부)
+            const logoutBtn = await this.page.$('a[href*="logout"]');
+            if (logoutBtn) {
+                log.info('✅ 로그인 성공!');
+                await this.saveCookies();
+                return true;
+            } else {
+                log.error('❌ 로그인 실패 (ID/PW 확인)');
+                return false;
+            }
+        } catch (error) {
+            log.error(`로그인 에러: ${error.message}`);
+            return false;
+        }
+    }
+
+    /**
+     * 로그인 상태 확인 및 필요시 로그인
+     * @returns {Promise<boolean>} 로그인 상태
+     */
+    async ensureLoggedIn() {
+        // 현재 페이지에서 로그인 상태 확인
+        const logoutBtn = await this.page.$('a[href*="logout"]');
+
+        if (logoutBtn) {
+            log.info('이미 로그인 상태');
+            return true;
+        }
+
+        log.info('로그인 필요 - 로그인 시도...');
+        return await this.login();
+    }
+
+    /**
      * 브라우저 종료
      * @returns {Promise<void>}
      */

@@ -12,6 +12,7 @@
 
 import { BrowserEngine } from './src/core/BrowserEngine.js';
 import { MineGame } from './src/actions/MineGame.js';
+import { CONFIG } from './src/config/config.js';
 
 async function autoMine() {
     const engine = new BrowserEngine();
@@ -24,17 +25,19 @@ async function autoMine() {
         await engine.launch();
 
         // 2. 쿠키 복원 (로그인 유지)
-        const cookiesLoaded = await engine.loadCookies();
-        if (!cookiesLoaded) {
-            console.log('⚠️ 쿠키 없음 - 먼저 mine-test.js로 로그인하세요');
-            console.log('   node mine-test.js → 로그인 → [l] 입력 → 쿠키 저장');
-            await engine.close();
-            return;
-        }
+        await engine.loadCookies();
 
         // 3. 뉴토끼 접속
         console.log('📌 뉴토끼 접속 중...');
-        await engine.goto('https://newtoki469.com');
+        await engine.goto(CONFIG.SITE.BASE_URL);
+
+        // 4. 로그인 확인
+        const loggedIn = await engine.ensureLoggedIn();
+        if (!loggedIn) {
+            console.log('❌ 로그인 실패 - .env 파일 확인');
+            await engine.close();
+            return;
+        }
 
         // 4. MineGame 초기화
         mineGame = new MineGame(engine);

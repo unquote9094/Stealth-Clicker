@@ -6,6 +6,7 @@
  */
 
 import { CONFIG } from '../config/config.js';
+import Logger from './logger.js';
 
 /**
  * 터미널 UI 클래스
@@ -30,6 +31,9 @@ export class TerminalUI {
      */
     start() {
         if (!CONFIG.DEBUG.TERMINAL_UI) return;
+
+        // 터미널 UI 사용 시 Logger 콘솔 출력 끄기
+        Logger.setConsoleOutput(false);
 
         this.isRunning = true;
         this.render();

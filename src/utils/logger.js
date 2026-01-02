@@ -75,6 +75,19 @@ function writeToFile(filename, message) {
 class Logger {
     constructor(prefix = '') {
         this.prefix = prefix;
+        // CONFIG.DEBUG.TERMINAL_UI가 true면 콘솔 출력 비활성화
+        this.consoleOutput = true;
+    }
+
+    /**
+     * 콘솔 출력 ON/OFF
+     */
+    static setConsoleOutput(enabled) {
+        Logger._consoleEnabled = enabled;
+    }
+
+    _shouldLog() {
+        return Logger._consoleEnabled !== false && this.consoleOutput;
     }
 
     /**
@@ -83,7 +96,9 @@ class Logger {
     info(message) {
         const msg = this.prefix ? `[${this.prefix}] ${message}` : message;
         const formatted = formatMessage('INFO', msg);
-        console.log(`${colors.green}${formatted}${colors.reset}`);
+        if (this._shouldLog()) {
+            console.log(`${colors.green}${formatted}${colors.reset}`);
+        }
         writeToFile(`${getDateString()}.log`, formatted);
     }
 
@@ -93,7 +108,9 @@ class Logger {
     warn(message) {
         const msg = this.prefix ? `[${this.prefix}] ${message}` : message;
         const formatted = formatMessage('WARN', msg);
-        console.log(`${colors.yellow}${formatted}${colors.reset}`);
+        if (this._shouldLog()) {
+            console.log(`${colors.yellow}${formatted}${colors.reset}`);
+        }
         writeToFile(`${getDateString()}.log`, formatted);
     }
 
@@ -103,7 +120,9 @@ class Logger {
     error(message) {
         const msg = this.prefix ? `[${this.prefix}] ${message}` : message;
         const formatted = formatMessage('ERROR', msg);
-        console.log(`${colors.red}${formatted}${colors.reset}`);
+        if (this._shouldLog()) {
+            console.log(`${colors.red}${formatted}${colors.reset}`);
+        }
         writeToFile(`${getDateString()}.log`, formatted);
         writeToFile(`${getDateString()}_errors.log`, formatted);
     }

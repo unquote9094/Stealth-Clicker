@@ -7,6 +7,7 @@
 
 import { BrowserEngine } from './src/core/BrowserEngine.js';
 import { MineGame } from './src/actions/MineGame.js';
+import { CONFIG } from './src/config/config.js';
 
 async function testForklift() {
     const engine = new BrowserEngine();
@@ -28,7 +29,7 @@ async function testForklift() {
 
         // 3. 뉴토끼 접속
         console.log('📌 뉴토끼 접속 중...');
-        await engine.goto('https://newtoki469.com');
+        await engine.goto(CONFIG.SITE.BASE_URL);
 
         // 4. MineGame 초기화
         mineGame = new MineGame(engine);
