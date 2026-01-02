@@ -143,13 +143,8 @@ export class MineGame {
             this.lastAlertMessage = message;
             log.warn(`경고창 감지: ${message}`);
 
-            // 경고창 자동 확인 (이미 다른 핸들러가 처리했으면 무시)
-            try {
-                await dialog.accept();
-            } catch (e) {
-                // 이미 처리된 dialog는 무시 (MonsterRaid와 충돌 방지)
-                log.debug('Dialog 이미 처리됨 (무시)');
-            }
+            // 경고창 자동 확인
+            await dialog.accept();
         });
 
         this.alertHandlerRegistered = true;
@@ -209,6 +204,10 @@ export class MineGame {
                     const url = linkEl?.getAttribute('href') || '';
                     const name = linkEl?.textContent.trim().split('\n')[0].trim() || '';
 
+                    // 상태 이미지 (coal = 살아있음, closed = 폐광)
+                    const imgEl = item.querySelector('.wr-thumb img');
+                    const imgSrc = imgEl?.getAttribute('src') || '';
+                    const isAlive = imgSrc.includes('mine_coal');
 
                     // 진행도
                     const progressEl = item.querySelector('.wr-progress .progress-bar-exp');
@@ -216,15 +215,15 @@ export class MineGame {
                     const progressMatch = progressStyle.match(/width:\s*([\d.]+)%/);
                     const progress = progressMatch ? parseFloat(progressMatch[1]) : 0;
 
-                    // 종료일로만 판단 (비어있으면 = 살아있음)
+                    // 종료일 (비어있으면 살아있음)
                     const dateEls = item.querySelectorAll('.wr-date');
                     const endDate = dateEls.length >= 2 ? dateEls[1].textContent.trim() : '';
-                    const isAlive = endDate.length === 0; // 단순! 종료일 없으면 살아있음
+                    const hasEndDate = endDate.length > 0;
 
                     return {
                         url,
                         name: name.replace(/채굴.*회$/, '').trim(),
-                        isAlive,
+                        isAlive: isAlive && !hasEndDate,
                         progress,
                         endDate
                     };
@@ -233,12 +232,6 @@ export class MineGame {
 
             // 살아있는 광산 필터링
             const aliveMines = mines.filter(m => m.isAlive);
-
-            // 광산 목록 로그 (debug 레벨 = 파일에만 저장)
-            log.debug(`광산 목록: 총 ${mines.length}개, 살아있는 광산 ${aliveMines.length}개`);
-            mines.slice(0, 3).forEach((m, i) => {
-                log.debug(`  [${i}] ${m.name} | isAlive: ${m.isAlive} | endDate: "${m.endDate}"`);
-            });
 
             if (aliveMines.length === 0) {
                 log.warn('살아있는 광산이 없습니다. 모두 폐광됨.');

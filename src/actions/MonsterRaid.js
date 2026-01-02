@@ -95,8 +95,13 @@ export class MonsterRaid {
             this.lastAlertMessage = message;
             log.warn(`경고창 감지: ${message}`);
 
-            // 경고창 자동 확인
-            await dialog.accept();
+            // 경고창 자동 확인 (이미 다른 핸들러가 처리했으면 무시)
+            try {
+                await dialog.accept();
+            } catch (e) {
+                // 이미 처리된 dialog는 무시 (MineGame과 충돌 방지)
+                log.debug('Dialog 이미 처리됨 (무시)');
+            }
         });
 
         this.alertHandlerRegistered = true;
