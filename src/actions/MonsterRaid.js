@@ -213,9 +213,9 @@ export class MonsterRaid {
     }
 
     /**
-     * 살아있는 레이드 찾기
-     * @returns {Promise<{url: string, name: string} | null>}
-     */
+ * 살아있는 레이드 찾기 (종료일 기준)
+ * @returns {Promise<{url: string, name: string} | null>}
+ */
     async findActiveRaid() {
         try {
             const raids = await this.page.$$eval(RAID_CONFIG.SELECTORS.LIST_ITEM, (items) => {
@@ -224,19 +224,31 @@ export class MonsterRaid {
                     const url = linkEl?.getAttribute('href') || '';
                     const name = linkEl?.textContent.trim().split('\n')[0].trim() || '';
 
-                    // javascript: 로 시작하면 비활성
-                    const isActive = url && !url.startsWith('javascript:');
+                    // 종료일 체크 (광산과 동일 방식)
+                    // 종료일이 비어있으면 = 살아있음
+                    const dateEls = item.querySelectorAll('.wr-date');
+                    const endDate = dateEls.length >= 2 ? dateEls[1].textContent.trim() : '';
+                    const isAlive = endDate.length === 0;
 
-                    return { url, name, isActive };
-                }).filter(r => r.isActive);
+                    return { url, name, isAlive, endDate };
+                });
             });
 
-            if (raids.length === 0) {
+            // 디버그 로그
+            log.debug(`레이드 목록: 총 ${raids.length}개`);
+            raids.slice(0, 3).forEach((r, i) => {
+                log.debug(`  [${i}] ${r.name.substring(0, 20)} | isAlive: ${r.isAlive} | endDate: "${r.endDate}"`);
+            });
+
+            // 살아있는 레이드만 필터
+            const aliveRaids = raids.filter(r => r.isAlive);
+
+            if (aliveRaids.length === 0) {
                 log.warn('살아있는 레이드가 없습니다.');
                 return null;
             }
 
-            const raid = raids[0];
+            const raid = aliveRaids[0];
             log.info(`살아있는 레이드 발견: ${raid.name}`);
             return raid;
         } catch (error) {
@@ -244,7 +256,6 @@ export class MonsterRaid {
             return null;
         }
     }
-
     /**
      * 레이드 공격 1회 (첫 공격만 - 캡차 우회)
      * @returns {Promise<{success: boolean, reward: number}>}
