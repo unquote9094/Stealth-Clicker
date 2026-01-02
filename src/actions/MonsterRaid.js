@@ -11,6 +11,8 @@
 
 import { createLogger } from '../utils/logger.js';
 import { sleep, randomInt } from '../utils/randomizer.js';
+import HumanMouse from '../core/HumanMouse.js';
+import IdleBehavior from '../core/IdleBehavior.js';
 
 const log = createLogger('Raid');
 
@@ -28,8 +30,9 @@ const RAID_CONFIG = {
         LIST_ITEM: 'li.list-item',
         RAID_LINK: '.wr-subject a.item-subject',
 
-        // 레이드 상세 (추정 - 실제 페이지 분석 필요)
-        ATTACK_BUTTON: 'button.raid_attack, #btn_attack, button[type="submit"]',
+        // 레이드 상세 (2026-01-02 HTML 분석 완료)
+        ATTACK_BUTTON: 'button.comment-submit.raid_attack',
+        ATTACK_TYPE_RADIO: 'input[name="wr_player_attack"]',
         ATTACK_FORM: '#fviewcomment',
     },
 
@@ -49,7 +52,12 @@ export class MonsterRaid {
         this.browserEngine = browserEngine;
         this.page = null;
         this.mouse = null;
+        this.idleBehavior = null;
         this.attackCount = 0;
+
+        // alert 처리용 변수
+        this.lastAlertMessage = null;
+        this.alertHandlerRegistered = false;
     }
 
     /**
@@ -61,8 +69,38 @@ export class MonsterRaid {
             throw new Error('브라우저가 실행되지 않았습니다.');
         }
 
-        // HumanMouse는 나중에 필요시 연결
+        // HumanMouse 초기화 (자연스러운 마우스 이동)
+        this.mouse = new HumanMouse(this.page);
+        await this.mouse.init();
+
+        // 대기 중 행동 모듈 초기화
+        this.idleBehavior = new IdleBehavior(this.page, this.mouse);
+
+        // alert(경고창) 핸들러 등록
+        this._registerAlertHandler();
+
         log.info('몬스터 레이드 모듈 초기화 완료');
+    }
+
+    /**
+     * alert 핸들러 등록
+     * 브라우저에서 뜨는 경고창을 자동으로 처리하고 내용을 저장
+     * @private
+     */
+    _registerAlertHandler() {
+        if (this.alertHandlerRegistered) return;
+
+        this.page.on('dialog', async (dialog) => {
+            const message = dialog.message();
+            this.lastAlertMessage = message;
+            log.warn(`경고창 감지: ${message}`);
+
+            // 경고창 자동 확인
+            await dialog.accept();
+        });
+
+        this.alertHandlerRegistered = true;
+        log.debug('Alert 핸들러 등록 완료');
     }
 
     /**
@@ -191,16 +229,59 @@ export class MonsterRaid {
             await this.browserEngine.goto(raid.url);
             await sleep(randomInt(2000, 3000));
 
-            // 4. 공격 버튼 찾기 및 클릭
+            // alert 초기화
+            this.lastAlertMessage = null;
+
+            // 4. 공격 버튼 대기 (화면에 나올 때까지)
+            try {
+                await this.page.waitForSelector(RAID_CONFIG.SELECTORS.ATTACK_BUTTON, {
+                    visible: true,
+                    timeout: 5000
+                });
+            } catch (e) {
+                log.error('공격 버튼을 찾을 수 없습니다.');
+                return { success: false, reward: 0 };
+            }
+
+            // 5. 공격 버튼 스크롤 (화면에 보이게)
             const attackButton = await this.page.$(RAID_CONFIG.SELECTORS.ATTACK_BUTTON);
             if (!attackButton) {
                 log.error('공격 버튼을 찾을 수 없습니다.');
                 return { success: false, reward: 0 };
             }
+            await attackButton.scrollIntoView();
+            await sleep(randomInt(1000, 2000)); // 스크롤 후 대기
 
-            // 버튼 클릭
-            await attackButton.click();
-            await sleep(randomInt(1000, 2000));
+            // 6. 공격 타입 랜덤 선택 (1~6: 근접/원거리/불/물/바람/땅)
+            const attackTypes = ['근접', '원거리', '불속성', '물속성', '바람속성', '땅속성'];
+            const attackTypeId = randomInt(1, 7); // 1~6
+            const attackTypeSelector = `#wr_player_attack_${attackTypeId}`;
+
+            // HumanMouse로 공격 타입 선택
+            const attackTypeClicked = await this.mouse.click(attackTypeSelector);
+            if (attackTypeClicked) {
+                await sleep(randomInt(300, 600));
+                log.debug(`공격 타입 선택: ${attackTypes[attackTypeId - 1]}`);
+            } else {
+                log.warn('공격 타입 라디오 버튼을 찾을 수 없습니다.');
+            }
+
+            // 7. 공격 버튼 클릭 (HumanMouse 사용)
+            await sleep(randomInt(200, 500));
+            const clicked = await this.mouse.click(RAID_CONFIG.SELECTORS.ATTACK_BUTTON);
+
+            if (!clicked) {
+                log.error('공격 버튼 클릭 실패');
+                return { success: false, reward: 0 };
+            }
+
+            await sleep(1500); // 서버 응답 대기
+
+            // alert가 떴으면 실패
+            if (this.lastAlertMessage) {
+                log.warn(`공격 실패 (경고): ${this.lastAlertMessage}`);
+                return { success: false, reward: 0 };
+            }
 
             this.attackCount++;
             log.info(`레이드 공격 성공! (총 ${this.attackCount}회)`);
