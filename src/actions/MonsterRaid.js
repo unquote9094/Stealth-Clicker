@@ -258,17 +258,14 @@ export class MonsterRaid {
             await sleep(randomInt(1000, 2000)); // 스크롤 후 대기
 
             // 6. 공격 타입 랜덤 선택 (1~6: 근접/원거리/불/물/바람/땅)
-            const attackTypes = ['근접', '원거리', '불속성', '물속성', '바람속성', '땅속성'];
-            const attackTypeId = randomInt(1, 7); // 1~6
+            // 공격 타입은 포인트와 무관, 그냥 랜덤 선택
+            const attackTypeId = randomInt(1, 6); // 1~6 (수정: 7 → 6)
             const attackTypeSelector = `#wr_player_attack_${attackTypeId}`;
 
-            // HumanMouse로 공격 타입 선택
+            // HumanMouse로 공격 타입 선택 (실패해도 기본값이 선택되어 있으므로 무시)
             const attackTypeClicked = await this.mouse.click(attackTypeSelector);
             if (attackTypeClicked) {
                 await sleep(randomInt(300, 600));
-                log.debug(`공격 타입 선택: ${attackTypes[attackTypeId - 1]}`);
-            } else {
-                log.warn('공격 타입 라디오 버튼을 찾을 수 없습니다.');
             }
 
             // 7. 공격 버튼 클릭 (HumanMouse 사용)
@@ -282,12 +279,20 @@ export class MonsterRaid {
 
             await sleep(1500); // 서버 응답 대기
 
-            // alert가 떴으면 실패
+            // alert 메시지 확인
             if (this.lastAlertMessage) {
-                log.warn(`공격 실패 (경고): ${this.lastAlertMessage}`);
+                // "피해를 주었습니다" = 성공!
+                if (this.lastAlertMessage.includes('피해를 주었습니다')) {
+                    this.attackCount++;
+                    log.info(`레이드 공격 성공! ${this.lastAlertMessage}`);
+                    return { success: true, reward: 10 };
+                }
+                // 그 외 메시지는 실패
+                log.warn(`공격 실패: ${this.lastAlertMessage}`);
                 return { success: false, reward: 0 };
             }
 
+            // alert 없이도 성공으로 간주
             this.attackCount++;
             log.info(`레이드 공격 성공! (총 ${this.attackCount}회)`);
 
