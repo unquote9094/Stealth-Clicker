@@ -540,12 +540,14 @@ export class MineGame {
                 log.debug(`최근 채굴 기록: ${lastResult.substring(0, 60)}`);
 
                 // "채굴 성공 (채굴 보상 : 1266)" 형식 - 성공
+                // 순이익 = 보상 - 배거288 사용료(1000)
                 const successMatch = lastResult.match(/채굴 성공.*채굴 보상.*:\s*([\d,]+)/);
                 if (successMatch) {
-                    const reward = parseInt(successMatch[1].replace(/,/g, ''), 10);
-                    this.totalReward += reward;
-                    log.info(`채굴 성공! 보상: ${reward} MP (총 ${this.totalReward} MP)`);
-                    return { success: true, reward };
+                    const grossReward = parseInt(successMatch[1].replace(/,/g, ''), 10);
+                    const netProfit = grossReward - 1000; // 배거288 사용료 차감
+                    this.totalReward += netProfit;
+                    log.info(`채굴 성공! 순이익: ${netProfit} MP (보상 ${grossReward} - 사용료 1000, 총 ${this.totalReward} MP)`);
+                    return { success: true, reward: netProfit };
                 }
 
                 // "채굴 실패 (실패 보상 : 163)" 형식 - 실패 (손해)

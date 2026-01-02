@@ -212,6 +212,9 @@ export class Orchestrator {
                     this._updateUI('⚔️ 레이드 시간!');
                     log.info('대기 중 레이드 시간 감지 - 공격 시도');
 
+                    // 레이드로 이동 전 대기 (사람처럼)
+                    await sleep(randomInt(3000, 5000));
+
                     const result = await this.monsterRaid.attackOnce();
 
                     if (result.success) {
@@ -223,8 +226,9 @@ export class Orchestrator {
                         log.info(`레이드 공격 완료! +${result.reward} MP`);
                     }
 
-                    // 레이드 후 광산 페이지로 복귀
+                    // 레이드 후 광산 페이지로 복귀 전 대기
                     this._updateUI('⏳ 광산 복귀 중...');
+                    await sleep(randomInt(3000, 5000));
                     await this.mineGame?.navigateToMine?.() ?? await sleep(2000);
                     this._updateUI('⏳ 대기 중');
                 }
