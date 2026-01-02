@@ -121,10 +121,6 @@ export class Orchestrator {
             return false;
         }
 
-        // 현재 광산 이름 업데이트
-        const mineName = '아오지 탄광'; // TODO: 실제 이름 가져오기
-        this.terminalUI.update({ currentMine: mineName });
-
         // 채굴 수행
         this._updateUI('⛏️ 채굴 중...');
         const result = await this.mineGame.mineOnce();
@@ -196,15 +192,44 @@ export class Orchestrator {
     }
 
     /**
-     * UI 갱신하면서 대기
+     * UI 갱신하면서 대기 (레이드 시간 체크 포함)
      * @private
      */
     async _waitWithUIUpdate(durationMs) {
         const endTime = Date.now() + durationMs;
+        let lastRaidCheck = 0;
 
         while (Date.now() < endTime && this.isRunning) {
             const remaining = endTime - Date.now();
             this.terminalUI.updateWait(remaining);
+
+            // 레이드 시간 체크 (1분마다)
+            const now = Date.now();
+            if (CONFIG.FEATURES.RAID && this.monsterRaid && now - lastRaidCheck > 60000) {
+                lastRaidCheck = now;
+
+                if (this.monsterRaid.isRaidTime()) {
+                    this._updateUI('⚔️ 레이드 시간!');
+                    log.info('대기 중 레이드 시간 감지 - 공격 시도');
+
+                    const result = await this.monsterRaid.attackOnce();
+
+                    if (result.success) {
+                        this.stats.raidReward += result.reward;
+                        this.terminalUI.updateRaid(
+                            this.monsterRaid.attackCount,
+                            this.stats.raidReward
+                        );
+                        log.info(`레이드 공격 완료! +${result.reward} MP`);
+                    }
+
+                    // 레이드 후 광산 페이지로 복귀
+                    this._updateUI('⏳ 광산 복귀 중...');
+                    await this.mineGame?.navigateToMine?.() ?? await sleep(2000);
+                    this._updateUI('⏳ 대기 중');
+                }
+            }
+
             await sleep(1000);
         }
 

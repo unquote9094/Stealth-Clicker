@@ -539,13 +539,24 @@ export class MineGame {
                 const lastResult = resultMessages[0];
                 log.debug(`최근 채굴 기록: ${lastResult.substring(0, 60)}`);
 
-                // "아오지에서 배거288 채굴 성공 (채굴 보상 : 1266)" 형식
-                const rewardMatch = lastResult.match(/채굴.*보상.*:\s*([\d,]+)/);
-                if (rewardMatch) {
-                    const reward = parseInt(rewardMatch[1].replace(/,/g, ''), 10);
+                // "채굴 성공 (채굴 보상 : 1266)" 형식 - 성공
+                const successMatch = lastResult.match(/채굴 성공.*채굴 보상.*:\s*([\d,]+)/);
+                if (successMatch) {
+                    const reward = parseInt(successMatch[1].replace(/,/g, ''), 10);
                     this.totalReward += reward;
                     log.info(`채굴 성공! 보상: ${reward} MP (총 ${this.totalReward} MP)`);
                     return { success: true, reward };
+                }
+
+                // "채굴 실패 (실패 보상 : 163)" 형식 - 실패 (손해)
+                // 배거288 사용료 1000 - 실패 보상 = 손해
+                const failMatch = lastResult.match(/채굴 실패.*실패 보상.*:\s*([\d,]+)/);
+                if (failMatch) {
+                    const refund = parseInt(failMatch[1].replace(/,/g, ''), 10);
+                    const loss = 1000 - refund; // 배거288 사용료 1000
+                    this.totalReward -= loss;
+                    log.warn(`채굴 실패! 손해: -${loss} MP (환불 ${refund}, 총 ${this.totalReward} MP)`);
+                    return { success: false, reward: -loss };
                 }
             }
 
