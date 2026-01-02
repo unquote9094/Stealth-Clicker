@@ -218,7 +218,9 @@ export class MineGame {
                     // 종료일 (비어있으면 살아있음)
                     const dateEls = item.querySelectorAll('.wr-date');
                     const endDate = dateEls.length >= 2 ? dateEls[1].textContent.trim() : '';
-                    const hasEndDate = endDate.length > 0;
+
+                    // 버그 수정 (2026-01-02): 종료일 칸에 공백/특수문자가 있어도 숫자가 없으면 종료일 없는 것으로 간주
+                    const hasEndDate = /\d/.test(endDate);
 
                     return {
                         url,

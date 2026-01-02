@@ -198,20 +198,50 @@ export class BrowserEngine {
             log.info('로그인 페이지 이동...');
             await this.goto(loginUrl);
 
-            // ID 입력
-            await this.page.waitForSelector('#mb_id', { timeout: 5000 });
-            await this.page.type('#mb_id', ID, { delay: 50 });
+            // 셀렉터 (2026-01-02 분석)
+            const SELECTORS = {
+                ID: '#login_id',
+                PW: '#login_pw',
+                CAPTCHA: '#captcha_key',
+                SUBMIT: 'button.btn-color',
+            };
 
-            // PW 입력
-            await this.page.type('#mb_password', PW, { delay: 50 });
+            // 캡차 존재 확인
+            const hasCaptcha = await this.page.$(SELECTORS.CAPTCHA);
+            if (hasCaptcha) {
+                log.warn('⚠️ 로그인 페이지에 캡차(CAPTCHA)가 있습니다!');
+                log.warn('👉 브라우저에서 직접 로그인해주세요. (30초 대기)');
 
-            // 로그인 버튼 클릭
-            await this.page.click('button[type="submit"]');
+                // 30초 동안 수동 로그인 대기
+                for (let i = 30; i > 0; i--) {
+                    // 이미 로그인 되었는지 확인
+                    const currentUrl = this.page.url();
+                    if (!currentUrl.includes('login')) {
+                        log.info('✅ 로그인 감지됨!');
+                        await this.saveCookies();
+                        return true;
+                    }
+
+                    if (i % 10 === 0) {
+                        log.info(`⏳ 수동 로그인 대기 중... ${i}초`);
+                    }
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+
+                log.error('❌ 수동 로그인 시간 초과');
+                return false;
+            }
+
+            // 캡차 없으면 자동 로그인 시도
+            await this.page.waitForSelector(SELECTORS.ID, { timeout: 5000 });
+            await this.page.type(SELECTORS.ID, ID, { delay: 50 });
+            await this.page.type(SELECTORS.PW, PW, { delay: 50 });
+            await this.page.click(SELECTORS.SUBMIT);
 
             // 페이지 이동 대기
             await this.page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 });
 
-            // 로그인 성공 확인 (로그아웃 버튼 존재 여부)
+            // 로그인 성공 확인
             const logoutBtn = await this.page.$('a[href*="logout"]');
             if (logoutBtn) {
                 log.info('✅ 로그인 성공!');
@@ -226,6 +256,7 @@ export class BrowserEngine {
             return false;
         }
     }
+
 
     /**
      * 로그인 상태 확인 및 필요시 로그인
@@ -270,14 +301,20 @@ export class BrowserEngine {
      * @private
      * @returns {{width: number, height: number}}
      */
+    /**
+     * 랜덤 뷰포트 생성 (봇 감지 회피)
+     * 2026-01-02: 사용자 요청으로 해상도 대폭 확대 (가로 1.5배, 세로 2배)
+     * @private
+     * @returns {{width: number, height: number}}
+     */
     _randomViewport() {
-        // 일반적인 해상도 범위 내에서 랜덤
+        // 2026-01-02: 가로는 원래대로, 세로는 2배 확대 (사용자 요청)
         const widths = [1366, 1440, 1536, 1600, 1920];
-        const heights = [768, 900, 864, 900, 1080];
+        const heights = [1536, 1600, 1728, 1800, 2160];
 
         const index = Math.floor(Math.random() * widths.length);
 
-        // 약간의 랜덤 오프셋 추가 (완전히 동일한 해상도 방지)
+        // 약간의 랜덤 오프셋 추가
         const widthOffset = Math.floor(Math.random() * 20) - 10;
         const heightOffset = Math.floor(Math.random() * 20) - 10;
 
