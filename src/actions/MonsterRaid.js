@@ -11,6 +11,7 @@
 
 import { createLogger } from '../utils/logger.js';
 import { sleep, randomInt } from '../utils/randomizer.js';
+import { CONFIG } from '../config/config.js';
 import HumanMouse from '../core/HumanMouse.js';
 import IdleBehavior from '../core/IdleBehavior.js';
 
@@ -94,6 +95,10 @@ export class MonsterRaid {
             const message = dialog.message();
             this.lastAlertMessage = message;
             log.warn(`경고창 감지: ${message}`);
+
+            // 사람처럼 1~3초 대기 후 확인 클릭 (봇 감지 방지)
+            const delay = randomInt(1000, 3000);
+            await sleep(delay);
 
             // 경고창 자동 확인 (이미 다른 핸들러가 처리했으면 무시)
             try {
@@ -281,14 +286,26 @@ export class MonsterRaid {
 
             // alert 메시지 확인
             if (this.lastAlertMessage) {
+                const msg = this.lastAlertMessage;
+
                 // "피해를 주었습니다" = 성공!
-                if (this.lastAlertMessage.includes('피해를 주었습니다')) {
+                if (msg.includes('피해를 주었습니다')) {
                     this.attackCount++;
-                    log.info(`레이드 공격 성공! ${this.lastAlertMessage}`);
-                    return { success: true, reward: 10 };
+                    log.info(`레이드 공격 성공! ${msg}`);
+                    // 댓글에서 실제 포인트 파싱
+                    const reward = await this._parseRewardFromComment();
+                    return { success: true, reward };
                 }
+
+                // 레이드 종료 메시지 → 다음 레이드 필요
+                if (msg.includes('처치') || msg.includes('죽') || msg.includes('끝') || msg.includes('종료')) {
+                    log.warn(`레이드 종료됨: ${msg}`);
+                    this.raidEnded = true; // 레이드 종료 플래그
+                    return { success: false, reward: 0 };
+                }
+
                 // 그 외 메시지는 실패
-                log.warn(`공격 실패: ${this.lastAlertMessage}`);
+                log.warn(`공격 실패: ${msg}`);
                 return { success: false, reward: 0 };
             }
 
@@ -296,12 +313,73 @@ export class MonsterRaid {
             this.attackCount++;
             log.info(`레이드 공격 성공! (총 ${this.attackCount}회)`);
 
-            // 첫 공격은 10포인트 무료
-            return { success: true, reward: 10 };
+            // 댓글에서 실제 포인트 파싱 시도
+            const reward = await this._parseRewardFromComment();
+            return { success: true, reward };
 
         } catch (error) {
             log.error(`레이드 공격 실패: ${error.message}`);
             return { success: false, reward: 0 };
+        }
+    }
+
+    /**
+     * 댓글에서 내 닉네임의 최신 포인트 파싱
+     * 형식: "N포인트를 흡수하였습니다" 또는 "N포인트를 빼앗겼습니다" (반격)
+     * @private
+     * @returns {Promise<number>}
+     */
+    async _parseRewardFromComment() {
+        try {
+            const nickname = CONFIG.AUTH.NICKNAME;
+
+            // 댓글 목록에서 내 닉네임 찾기 (최신 3개만 확인)
+            const comments = await this.page.$$eval(
+                '#bo_vc .media',
+                (els, nick) => {
+                    return els.slice(0, 10).map(el => {
+                        const nameEl = el.querySelector('.media-heading');
+                        const contentEl = el.querySelector('.media-content');
+                        return {
+                            name: nameEl?.textContent.trim() || '',
+                            content: contentEl?.textContent.trim() || ''
+                        };
+                    }).filter(c => c.name.includes(nick));
+                },
+                nickname
+            );
+
+            if (comments.length === 0) {
+                log.debug('내 댓글을 찾을 수 없음');
+                return 10; // 기본값
+            }
+
+            // 가장 최신 내 댓글
+            const myComment = comments[0].content;
+            log.debug(`내 댓글: ${myComment.substring(0, 50)}`);
+
+            // "N포인트를 흡수하였습니다" 파싱
+            const absorbMatch = myComment.match(/(\d+)포인트를 흡수/);
+            if (absorbMatch) {
+                const reward = parseInt(absorbMatch[1], 10);
+                log.info(`포인트 흡수: ${reward} MP`);
+                this.totalReward += reward;
+                return reward;
+            }
+
+            // "N포인트를 빼앗겼습니다" (반격당함 - 손실)
+            const lossMatch = myComment.match(/(\d+)포인트를 빼/);
+            if (lossMatch) {
+                const loss = parseInt(lossMatch[1], 10);
+                log.warn(`포인트 손실: -${loss} MP (반격당함)`);
+                this.totalReward -= loss;
+                return -loss;
+            }
+
+            return 10; // 기본값
+        } catch (error) {
+            log.debug(`포인트 파싱 실패: ${error.message}`);
+            return 10; // 기본값
         }
     }
 

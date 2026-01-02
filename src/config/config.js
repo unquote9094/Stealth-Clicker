@@ -12,6 +12,7 @@ export const CONFIG = {
     AUTH: {
         ID: process.env.NEWTOKI_ID || '',
         PW: process.env.NEWTOKI_PW || '',
+        NICKNAME: process.env.NEWTOKI_NICKNAME || '[살려줘요ㅠㅠ]', // 포인트 파싱용
     },
 
     // ===== 기능 ON/OFF =====

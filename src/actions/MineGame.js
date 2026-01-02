@@ -143,6 +143,10 @@ export class MineGame {
             this.lastAlertMessage = message;
             log.warn(`경고창 감지: ${message}`);
 
+            // 사람처럼 1~3초 대기 후 확인 클릭 (봇 감지 방지)
+            const delay = randomInt(1000, 3000);
+            await sleep(delay);
+
             // 경고창 자동 확인 (이미 다른 핸들러가 처리했으면 무시)
             try {
                 await dialog.accept();
@@ -447,12 +451,22 @@ export class MineGame {
             const clicked = await this.mouse.click(MINE_CONFIG.SELECTORS.MINE_BUTTON);
 
             if (clicked) {
-                // 클릭 후 잠시 대기 (서버 응답 + alert 처리 시간)
-                await sleep(1500);
+                // 클릭 후 잠시 대기 (서버 응답 + alert 처리 시간 - 딜레이가 dialog 핸들러에 있으므로 더 기다림)
+                await sleep(4000);
 
-                // 버그 수정: alert가 떴으면 실패로 처리
+                // alert 메시지에 따라 처리
                 if (this.lastAlertMessage) {
-                    log.warn(`채굴 실패 (경고): ${this.lastAlertMessage}`);
+                    const msg = this.lastAlertMessage;
+
+                    // 광산 종료 메시지 → 다음 광산 찾기 필요
+                    if (msg.includes('끝난') || msg.includes('폐광') || msg.includes('종료')) {
+                        log.warn(`광산 종료됨: ${msg}`);
+                        this.mineEnded = true; // 광산 종료 플래그
+                        return false;
+                    }
+
+                    // 그 외 실패 (쿨타임 등)
+                    log.warn(`채굴 실패: ${msg}`);
                     return false;
                 }
 
