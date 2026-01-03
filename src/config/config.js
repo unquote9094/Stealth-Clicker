@@ -88,9 +88,9 @@ export const CONFIG = {
     IDLE_BEHAVIOR: {
         // 행동 확률 (합계 100%)
         CHANCES: {
-            MOUSE_MOVE: 50,    // 마우스 이동 (%)
-            SCROLL: 25,        // 스크롤 (%)
-            PAGE_VISIT: 15,    // 랜덤 페이지 방문 (%)
+            MOUSE_MOVE: 15,    // 마우스 이동 (%)
+            SCROLL: 35,        // 스크롤 (%)
+            PAGE_VISIT: 40,    // 랜덤 페이지 방문 (%)
             REST: 10,          // 휴식 (아무것도 안 함) (%)
         },
         // 새로고침 설정 (Frame 분리 에러 방지)
@@ -114,6 +114,12 @@ export const CONFIG = {
             MAX: 30000,        // 최대 체류 시간 (30초)
         },
         MAX_VISITS: 2,         // 대기 1회당 최대 방문 횟수
+    },
+
+    // ===== 브라우저 설정 =====
+    BROWSER: {
+        WIDTH: 1360,           // 뷰포트 너비 (고정)
+        HEIGHT: 1542,          // 뷰포트 높이 (고정)
     },
 
     // ===== 마우스 설정 =====

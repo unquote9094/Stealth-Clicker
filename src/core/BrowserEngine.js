@@ -297,30 +297,15 @@ export class BrowserEngine {
     }
 
     /**
-     * 랜덤 뷰포트 생성 (봇 감지 회피)
-     * @private
-     * @returns {{width: number, height: number}}
-     */
-    /**
-     * 랜덤 뷰포트 생성 (봇 감지 회피)
-     * 2026-01-02: 사용자 요청으로 해상도 대폭 확대 (가로 1.5배, 세로 2배)
+     * 뷰포트 크기 반환 (CONFIG에서 고정값 사용)
      * @private
      * @returns {{width: number, height: number}}
      */
     _randomViewport() {
-        // 2026-01-02: 가로는 원래대로, 세로는 2배 확대 (사용자 요청)
-        const widths = [1366, 1440, 1536, 1600, 1920];
-        const heights = [1536, 1600, 1728, 1800, 2160];
-
-        const index = Math.floor(Math.random() * widths.length);
-
-        // 약간의 랜덤 오프셋 추가
-        const widthOffset = Math.floor(Math.random() * 20) - 10;
-        const heightOffset = Math.floor(Math.random() * 20) - 10;
-
+        // CONFIG에서 고정 크기 읽기 (기본값: 1360x1542)
         return {
-            width: widths[index] + widthOffset,
-            height: heights[index] + heightOffset,
+            width: CONFIG.BROWSER?.WIDTH || 1360,
+            height: CONFIG.BROWSER?.HEIGHT || 1542,
         };
     }
 }
