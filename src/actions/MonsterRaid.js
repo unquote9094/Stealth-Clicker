@@ -242,6 +242,11 @@ export class MonsterRaid {
     }
     /**
      * 레이드 공격 1회 (첫 공격만 - 캡차 우회)
+     * 
+     * 포인트 파싱 방식: 경고창 대신 댓글에서 내 닉네임의 최근 댓글(30초 이내)을 찾아 파싱
+     * - "N포인트를 흡수하였습니다" → 보상
+     * - "N포인트를 빼앗겼습니다" → 반격 손실
+     * 
      * @returns {Promise<{success: boolean, reward: number}>}
      */
     async attackOnce() {
@@ -300,9 +305,8 @@ export class MonsterRaid {
             await attackButton.scrollIntoView();
             await sleep(randomInt(1000, 2000)); // 스크롤 후 대기
 
-            // 6. 공격 타입 랜덤 선택 (1~6: 근접/원거리/불/물/바람/땅)
-            // 공격 타입은 포인트와 무관, 그냥 랜덤 선택
-            const attackTypeId = randomInt(1, 6); // 1~6 (수정: 7 → 6)
+            // 8. 공격 타입 랜덤 선택 (1~6: 근접/원거리/불/물/바람/땅)
+            const attackTypeId = randomInt(1, 6);
             const attackTypeSelector = `#wr_player_attack_${attackTypeId}`;
 
             // HumanMouse로 공격 타입 선택 (실패해도 기본값이 선택되어 있으므로 무시)
@@ -311,8 +315,8 @@ export class MonsterRaid {
                 await sleep(randomInt(300, 600));
             }
 
-            // 7. 공격 버튼 클릭 (HumanMouse 사용)
-            await sleep(randomInt(200, 500));
+            // 9. 공격 버튼 클릭 (HumanMouse 사용)
+            await sleep(randomInt(500, 1000));
             const clicked = await this.mouse.click(RAID_CONFIG.SELECTORS.ATTACK_BUTTON);
 
             if (!clicked) {
@@ -320,7 +324,7 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            // ========== 순서대로 처리 ==========
+            // ========== 새로운 방식: 경고창 → 댓글 파싱 ==========
 
             // 1. 경고창 뜰 때까지 기다림 (최대 10초)
             log.info('경고창 대기 중...');
@@ -335,49 +339,51 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            // 2. 경고창 메시지 파싱
+            // 2. 경고창 표시 (디버깅용, 포인트 파싱은 안 함)
             const msg = this.lastAlertMessage;
             log.info(`[Alert 감지] ${msg.substring(0, 60)}...`);
 
-            let result = { success: false, reward: 0 };
-
-            // 3. 성공/실패 판단 및 포인트 계산
-            if (msg.includes('피해를 주었습니다')) {
-                // 공격 성공!
-                this.attackCount++;
-                this.lastAttackedRaidUrl = this.page.url();
-
-                // "N포인트를 흡수하였습니다" 파싱
-                const absorbMatch = msg.match(/(\d+)포인트를 흡수/);
-                if (absorbMatch) {
-                    const reward = parseInt(absorbMatch[1], 10);
-                    this.totalReward += reward;
-                    log.info(`★ 공격 성공! +${reward} MP (총 ${this.totalReward} MP)`);
-                    result = { success: true, reward };
-                } else {
-                    log.warn('포인트 파싱 실패, 기본값 10');
-                    result = { success: true, reward: 10 };
-                }
-            } else if (msg.includes('빼앗겼습니다') || msg.includes('빼앗')) {
-                // 반격당함
-                const lossMatch = msg.match(/(\d+)포인트를 빼/);
-                if (lossMatch) {
-                    const loss = parseInt(lossMatch[1], 10);
-                    this.totalReward -= loss;
-                    log.warn(`★ 반격당함! -${loss} MP (총 ${this.totalReward} MP)`);
-                    result = { success: false, reward: -loss };
-                }
-            } else if (msg.includes('처치') || msg.includes('죽') || msg.includes('종료')) {
-                log.warn(`레이드 종료됨: ${msg}`);
-                this.raidEnded = true;
-            } else {
-                log.warn(`알 수 없는 메시지: ${msg.substring(0, 40)}`);
-            }
-
-            // 4. 확인 버튼 클릭 (사람처럼 2-4초 대기 후)
+            // 3. 경고창 확인 버튼 클릭 (사람처럼 1-3초 대기 후)
             await this._acceptDialog();
 
-            return result;
+            // 4. 공격이 성공했는지만 확인 (레이드 종료/에러 등 체크)
+            if (msg.includes('처치') || msg.includes('죽') || msg.includes('종료')) {
+                log.warn(`레이드 종료됨: ${msg}`);
+                this.raidEnded = true;
+                return { success: false, reward: 0 };
+            }
+
+            if (!msg.includes('피해를') && !msg.includes('빼앗')) {
+                log.warn(`알 수 없는 메시지: ${msg.substring(0, 40)}`);
+                return { success: false, reward: 0 };
+            }
+
+            // 5. 댓글이 갱신될 때까지 대기 (2-4초)
+            const commentWait = randomInt(2000, 4000);
+            log.info(`댓글 로딩 대기... (${(commentWait / 1000).toFixed(1)}초)`);
+            await sleep(commentWait);
+
+            // 6. 댓글에서 내 최근 공격 결과 파싱
+            const reward = await this._parseRewardFromRecentComment();
+
+            // 7. 결과 기록
+            this.attackCount++;
+            this.lastAttackedRaidUrl = this.page.url();
+
+            if (reward > 0) {
+                this.totalReward += reward;
+                log.info(`★ 공격 성공! +${reward} MP (총 ${this.totalReward} MP)`);
+                return { success: true, reward };
+            } else if (reward < 0) {
+                this.totalReward += reward; // 음수이므로 빼기
+                log.warn(`★ 반격당함! ${reward} MP (총 ${this.totalReward} MP)`);
+                return { success: false, reward };
+            } else {
+                // reward === 0 (파싱 실패)
+                log.warn('포인트 파싱 실패, 기본값 10 적용');
+                this.totalReward += 10;
+                return { success: true, reward: 10 };
+            }
 
         } catch (error) {
             log.error(`레이드 공격 실패: ${error.message}`);
@@ -386,85 +392,111 @@ export class MonsterRaid {
     }
 
     /**
-     * 댓글에서 내 닉네임의 최신 포인트 파싱
-     * 형식: "N포인트를 흡수하였습니다" 또는 "N포인트를 빼앗겼습니다" (반격)
+     * 댓글에서 내 닉네임의 최신 공격 결과 파싱 (30초 이내만)
+     * 
+     * 댓글 형식 예시:
+     * - "10포인트를 소모하여 ... 8의 불속성 피해를 주었습니다. 10포인트를 흡수하였습니다."
+     * - "질풍의 ... 반격당해 65의 피해를 입었습니다. 65포인트를 빼앗겼습니다."
+     * 
      * @private
-     * @returns {Promise<number>}
+     * @returns {Promise<number>} 양수: 흡수, 음수: 빼앗김, 0: 파싱 실패
      */
-    async _parseRewardFromComment() {
+    async _parseRewardFromRecentComment() {
         try {
             const nickname = CONFIG.AUTH.NICKNAME;
 
-            // 모든 댓글 먼저 확인 (디버깅)
-            const allComments = await this.page.$$eval(
+            // 댓글 목록에서 최근 5개의 댓글 정보 수집 (닉네임, 시간, 내용)
+            const comments = await this.page.$$eval(
                 '#bo_vc .media',
                 (els) => {
-                    return els.slice(0, 5).map(el => {
-                        const nameEl = el.querySelector('.media-heading');
+                    return els.slice(0, 10).map(el => {
+                        // 닉네임 (예: "살려줘요ㅠㅠ")
+                        const nameEl = el.querySelector('.media-heading .member, .media-heading a, .media-heading');
+                        const name = nameEl?.textContent.trim().split('\n')[0].trim() || '';
+
+                        // 시간 (예: "2초전", "10초전", "1분전")
+                        const timeEl = el.querySelector('.media-heading .pull-right, .media-heading small');
+                        const timeText = timeEl?.textContent.trim() || '';
+
+                        // 내용 (예: "10포인트를 흡수하였습니다.")
                         const contentEl = el.querySelector('.media-content');
-                        return {
-                            name: nameEl?.textContent.trim() || '(이름없음)',
-                            content: contentEl?.textContent.trim().substring(0, 50) || '(내용없음)'
-                        };
+                        const content = contentEl?.textContent.trim() || '';
+
+                        return { name, timeText, content };
                     });
                 }
             );
 
-            // 디버깅 로그 (warn으로 콘솔에 출력)
-            log.warn(`[댓글 파싱] 닉네임: "${nickname}", 댓글 ${allComments.length}개`);
-            allComments.slice(0, 3).forEach((c, i) => {
-                log.warn(`  [${i}] ${c.name}: ${c.content}`);
+            // 디버깅 로그
+            log.info(`[댓글 파싱] 닉네임: "${nickname}", 댓글 ${comments.length}개 발견`);
+            comments.slice(0, 3).forEach((c, i) => {
+                log.debug(`  [${i}] ${c.name} (${c.timeText}): ${c.content.substring(0, 40)}...`);
             });
 
-            // 내 닉네임이 포함된 댓글 찾기
-            const myComments = allComments.filter(c => c.name.includes(nickname));
+            // 30초 이내 내 댓글 찾기
+            // 시간 형식: "N초전", "N분전" 등
+            for (const comment of comments) {
+                // 닉네임 체크 (부분 일치)
+                if (!comment.name.includes(nickname)) {
+                    continue;
+                }
 
-            if (myComments.length === 0) {
-                log.warn(`내 댓글을 찾을 수 없음 (닉네임: ${nickname})`);
-                return 10; // 기본값
-            }
-
-            // 가장 최신 내 댓글 (전체 내용 다시 가져오기)
-            const myCommentFull = await this.page.$$eval(
-                '#bo_vc .media',
-                (els, nick) => {
-                    for (const el of els) {
-                        const nameEl = el.querySelector('.media-heading');
-                        if (nameEl?.textContent.includes(nick)) {
-                            const contentEl = el.querySelector('.media-content');
-                            return contentEl?.textContent.trim() || '';
-                        }
+                // 시간 체크 (30초 이내)
+                const secMatch = comment.timeText.match(/(\d+)초전/);
+                if (secMatch) {
+                    const sec = parseInt(secMatch[1], 10);
+                    if (sec > 30) {
+                        log.debug(`내 댓글 발견했지만 ${sec}초 전 (30초 초과)`);
+                        continue;
                     }
-                    return '';
-                },
-                nickname
-            );
+                } else if (comment.timeText.includes('분전') || comment.timeText.includes('시간전')) {
+                    // 1분 이상 전이면 스킵
+                    log.debug(`내 댓글 발견했지만 너무 오래됨: ${comment.timeText}`);
+                    continue;
+                }
 
-            log.warn(`[파싱] 내 댓글 전체: ${myCommentFull.substring(0, 80)}`);
+                // 내 최근 댓글 발견!
+                log.info(`[내 댓글] ${comment.name} (${comment.timeText}): ${comment.content.substring(0, 60)}...`);
 
-            // "N포인트를 흡수하였습니다" 파싱
-            const absorbMatch = myCommentFull.match(/(\d+)포인트를 흡수/);
-            if (absorbMatch) {
-                const reward = parseInt(absorbMatch[1], 10);
-                log.info(`포인트 흡수: ${reward} MP`);
-                this.totalReward += reward;
-                return reward;
+                // "N포인트를 흡수하였습니다" 파싱
+                const absorbMatch = comment.content.match(/(\d+)포인트를 흡수/);
+                if (absorbMatch) {
+                    const reward = parseInt(absorbMatch[1], 10);
+                    log.info(`★ 포인트 흡수: +${reward} MP`);
+                    return reward;
+                }
+
+                // "N포인트를 빼앗겼습니다" (반격당함 - 손실)
+                const lossMatch = comment.content.match(/(\d+)포인트를 빼/);
+                if (lossMatch) {
+                    const loss = parseInt(lossMatch[1], 10);
+                    log.warn(`★ 포인트 손실: -${loss} MP (반격당함)`);
+                    return -loss;
+                }
+
+                // 포인트 정보 없음 (첫 공격은 10포인트 무료)
+                log.warn('포인트 정보 없음, 첫 공격 무료 10P 적용');
+                return 10;
             }
 
-            // "N포인트를 빼앗겼습니다" (반격당함 - 손실)
-            const lossMatch = myCommentFull.match(/(\d+)포인트를 빼/);
-            if (lossMatch) {
-                const loss = parseInt(lossMatch[1], 10);
-                log.warn(`포인트 손실: -${loss} MP (반격당함)`);
-                this.totalReward -= loss;
-                return -loss;
-            }
+            // 30초 이내 내 댓글 없음
+            log.warn(`30초 이내 내 댓글을 찾지 못함 (닉네임: ${nickname})`);
+            return 0; // 파싱 실패
 
-            return 10; // 기본값
         } catch (error) {
-            log.warn(`포인트 파싱 실패: ${error.message}`);
-            return 10; // 기본값
+            log.error(`댓글 파싱 오류: ${error.message}`);
+            return 0; // 파싱 실패
         }
+    }
+
+    /**
+     * [사용 안 함] 기존 댓글 파싱 함수 (백업용)
+     * @deprecated _parseRewardFromRecentComment() 사용
+     * @private
+     */
+    async _parseRewardFromComment() {
+        // 기존 함수는 더 이상 사용하지 않음
+        return await this._parseRewardFromRecentComment();
     }
 
     /**
