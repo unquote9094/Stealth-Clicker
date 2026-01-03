@@ -317,16 +317,38 @@ export class MonsterRaid {
             // alert 메시지 확인
             if (this.lastAlertMessage) {
                 const msg = this.lastAlertMessage;
+                log.warn(`[Alert] ${msg}`);
 
                 // "피해를 주었습니다" = 성공!
                 if (msg.includes('피해를 주었습니다')) {
                     this.attackCount++;
                     // 현재 레이드 URL 기록 (중복 공격 방지)
                     this.lastAttackedRaidUrl = this.page.url();
-                    log.info(`레이드 공격 성공! URL: ${this.lastAttackedRaidUrl}`);
-                    // 댓글에서 실제 포인트 파싱
-                    const reward = await this._parseRewardFromComment();
-                    return { success: true, reward };
+
+                    // alert 메시지에서 직접 포인트 파싱
+                    // 형식: "24포인트를 흡수하였습니다"
+                    const absorbMatch = msg.match(/(\d+)포인트를 흡수/);
+                    if (absorbMatch) {
+                        const reward = parseInt(absorbMatch[1], 10);
+                        this.totalReward += reward;
+                        log.info(`레이드 공격 성공! +${reward} MP (총 ${this.totalReward} MP)`);
+                        return { success: true, reward };
+                    }
+
+                    // 포인트 못 찾으면 기본값
+                    log.warn('포인트 파싱 실패, 기본값 10');
+                    return { success: true, reward: 10 };
+                }
+
+                // "피해를 입었습니다" + "빼앗겼습니다" = 반격당함
+                if (msg.includes('빼앗겼습니다') || msg.includes('빼앗')) {
+                    const lossMatch = msg.match(/(\d+)포인트를 빼/);
+                    if (lossMatch) {
+                        const loss = parseInt(lossMatch[1], 10);
+                        this.totalReward -= loss;
+                        log.warn(`반격당함! -${loss} MP (총 ${this.totalReward} MP)`);
+                        return { success: false, reward: -loss };
+                    }
                 }
 
                 // 레이드 종료 메시지 → 다음 레이드 필요
