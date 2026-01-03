@@ -84,6 +84,20 @@ export const CONFIG = {
         },
     },
 
+    // ===== 대기 중 랜덤 행동 설정 =====
+    IDLE_BEHAVIOR: {
+        // 행동 확률 (합계 100%)
+        CHANCES: {
+            MOUSE_MOVE: 50,    // 마우스 이동 (%)
+            SCROLL: 25,        // 스크롤 (%)
+            PAGE_VISIT: 15,    // 랜덤 페이지 방문 (%)
+            REST: 10,          // 휴식 (아무것도 안 함) (%)
+        },
+        // 새로고침 설정 (Frame 분리 에러 방지)
+        REFRESH_AFTER_MS: 120000,  // 2분 후 새로고침
+        CF_WAIT_MS: 20000,         // 클라우드플레어 대기 (20초)
+    },
+
     // ===== 대기 중 랜덤 페이지 방문 =====
     IDLE_BROWSING: {
         ENABLED: true,         // 기능 ON/OFF
@@ -95,7 +109,6 @@ export const CONFIG = {
             '/webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0',  // 완결웹툰
             '/webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0',  // 성인웹툰
         ],
-        VISIT_CHANCE: 15,      // 대기 중 방문 확률 (%) - 너무 높으면 의심됨
         STAY_TIME: {
             MIN: 10000,        // 최소 체류 시간 (10초)
             MAX: 30000,        // 최대 체류 시간 (30초)

@@ -63,30 +63,42 @@ export class IdleBehavior {
             const waitTime = Math.min(actionInterval, remaining);
 
             if (waitTime > 5000) {
-                // 2분 경과 후 새로고침 (1회만)
+                // 설정에서 새로고침 시간 읽기 (기본 2분)
+                const refreshAfterMs = CONFIG.IDLE_BEHAVIOR?.REFRESH_AFTER_MS || 120000;
                 const elapsed = Date.now() - startTime;
-                if (!this.hasRefreshed && elapsed > 120000) {
+                if (!this.hasRefreshed && elapsed > refreshAfterMs) {
                     await this._refreshPage();
                     this.hasRefreshed = true;
                 }
 
-                // 랜덤 행동 선택
-                // 50% 마우스, 25% 스크롤, 15% 페이지 방문, 10% 대기
-                const action = randomInt(1, 100);
+                // 설정에서 행동 확률 읽기
+                const chances = CONFIG.IDLE_BEHAVIOR?.CHANCES || {
+                    MOUSE_MOVE: 50,
+                    SCROLL: 25,
+                    PAGE_VISIT: 15,
+                    REST: 10,
+                };
 
-                if (action <= 50) {
-                    // 50% 확률: 마우스 이동
+                // 랜덤 행동 선택 (누적 확률)
+                const action = randomInt(1, 100);
+                const c1 = chances.MOUSE_MOVE;
+                const c2 = c1 + chances.SCROLL;
+                const c3 = c2 + chances.PAGE_VISIT;
+                // REST는 나머지
+
+                if (action <= c1) {
+                    // 마우스 이동
                     this._setStatus('🖱️ 마우스 이동');
                     await this._randomMouseMove();
-                } else if (action <= 75) {
-                    // 25% 확률: 스크롤
+                } else if (action <= c2) {
+                    // 스크롤
                     this._setStatus('📜 스크롤');
                     await this._randomScroll();
-                } else if (action <= 90) {
-                    // 15% 확률: 랜덤 페이지 방문
+                } else if (action <= c3) {
+                    // 랜덤 페이지 방문
                     await this._visitRandomPage();
                 } else {
-                    // 10% 확률: 휴식
+                    // 휴식
                     this._setStatus('💤 휴식');
                 }
             }
@@ -145,10 +157,12 @@ export class IdleBehavior {
             // 새로고침
             await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
 
-            // 클라우드플레어 처리 대기 (20초)
-            this._setStatus('⏳ 클라우드플레어 대기 (20초)');
-            log.info('⏳ 클라우드플레어 처리 대기 중... (20초)');
-            await sleep(20000);
+            // 클라우드플레어 처리 대기 (설정에서 읽기, 기본 20초)
+            const cfWaitMs = CONFIG.IDLE_BEHAVIOR?.CF_WAIT_MS || 20000;
+            const cfWaitSec = Math.floor(cfWaitMs / 1000);
+            this._setStatus(`⏳ 클라우드플레어 대기 (${cfWaitSec}초)`);
+            log.info(`⏳ 클라우드플레어 처리 대기 중... (${cfWaitSec}초)`);
+            await sleep(cfWaitMs);
 
             // 현재 URL 갱신
             this.originalUrl = this.page.url();
