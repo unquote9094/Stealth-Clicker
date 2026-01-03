@@ -90,7 +90,7 @@ export class MonsterRaid {
 
     /**
      * alert 핸들러 등록
-     * 브라우저에서 뜨는 경고창을 자동으로 처리하고 내용을 저장
+     * 경고창이 뜨면 메시지만 저장하고, accept는 나중에 직접 호출
      * @private
      */
     _registerAlertHandler() {
@@ -99,23 +99,31 @@ export class MonsterRaid {
         this.page.on('dialog', async (dialog) => {
             const message = dialog.message();
             this.lastAlertMessage = message;
-            log.warn(`경고창 감지: ${message}`);
-
-            // 사람처럼 1~3초 대기 후 확인 클릭 (봇 감지 방지)
-            const delay = randomInt(1000, 3000);
-            await sleep(delay);
-
-            // 경고창 자동 확인 (이미 다른 핸들러가 처리했으면 무시)
-            try {
-                await dialog.accept();
-            } catch (e) {
-                // 이미 처리된 dialog는 무시 (MineGame과 충돌 방지)
-                log.debug('Dialog 이미 처리됨 (무시)');
-            }
+            this.lastDialog = dialog; // dialog 객체도 저장
+            log.warn(`경고창 감지: ${message.substring(0, 80)}...`);
         });
 
         this.alertHandlerRegistered = true;
         log.debug('Alert 핸들러 등록 완료');
+    }
+
+    /**
+     * 현재 dialog 확인 클릭 (사람처럼 딜레이 포함)
+     * @private
+     */
+    async _acceptDialog() {
+        if (this.lastDialog) {
+            try {
+                // 사람처럼 2~4초 대기 후 확인
+                const delay = randomInt(2000, 4000);
+                log.info(`경고창 확인 중... (${(delay / 1000).toFixed(1)}초 대기)`);
+                await sleep(delay);
+                await this.lastDialog.accept();
+                this.lastDialog = null;
+            } catch (e) {
+                log.debug('Dialog 이미 처리됨');
+            }
+        }
     }
 
     /**
@@ -312,65 +320,64 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            await sleep(5000); // 서버 응답 대기 (dialog 핸들러 1-3초 대기 고려)
+            // ========== 순서대로 처리 ==========
 
-            // alert 메시지 확인
-            if (this.lastAlertMessage) {
-                const msg = this.lastAlertMessage;
-                log.warn(`[Alert] ${msg}`);
+            // 1. 경고창 뜰 때까지 기다림 (최대 10초)
+            log.info('경고창 대기 중...');
+            let waitCount = 0;
+            while (!this.lastAlertMessage && waitCount < 20) {
+                await sleep(500);
+                waitCount++;
+            }
 
-                // "피해를 주었습니다" = 성공!
-                if (msg.includes('피해를 주었습니다')) {
-                    this.attackCount++;
-                    // 현재 레이드 URL 기록 (중복 공격 방지)
-                    this.lastAttackedRaidUrl = this.page.url();
-
-                    // alert 메시지에서 직접 포인트 파싱
-                    // 형식: "24포인트를 흡수하였습니다"
-                    const absorbMatch = msg.match(/(\d+)포인트를 흡수/);
-                    if (absorbMatch) {
-                        const reward = parseInt(absorbMatch[1], 10);
-                        this.totalReward += reward;
-                        log.info(`레이드 공격 성공! +${reward} MP (총 ${this.totalReward} MP)`);
-                        return { success: true, reward };
-                    }
-
-                    // 포인트 못 찾으면 기본값
-                    log.warn('포인트 파싱 실패, 기본값 10');
-                    return { success: true, reward: 10 };
-                }
-
-                // "피해를 입었습니다" + "빼앗겼습니다" = 반격당함
-                if (msg.includes('빼앗겼습니다') || msg.includes('빼앗')) {
-                    const lossMatch = msg.match(/(\d+)포인트를 빼/);
-                    if (lossMatch) {
-                        const loss = parseInt(lossMatch[1], 10);
-                        this.totalReward -= loss;
-                        log.warn(`반격당함! -${loss} MP (총 ${this.totalReward} MP)`);
-                        return { success: false, reward: -loss };
-                    }
-                }
-
-                // 레이드 종료 메시지 → 다음 레이드 필요
-                if (msg.includes('처치') || msg.includes('죽') || msg.includes('끝') || msg.includes('종료')) {
-                    log.warn(`레이드 종료됨: ${msg}`);
-                    this.raidEnded = true; // 레이드 종료 플래그
-                    return { success: false, reward: 0 };
-                }
-
-                // 그 외 메시지는 실패
-                log.warn(`공격 실패: ${msg}`);
+            if (!this.lastAlertMessage) {
+                log.warn('경고창이 뜨지 않음');
                 return { success: false, reward: 0 };
             }
 
-            // alert 없이도 성공으로 간주
-            this.attackCount++;
-            this.lastAttackedRaidUrl = this.page.url();
-            log.info(`레이드 공격 성공! URL: ${this.lastAttackedRaidUrl}`);
+            // 2. 경고창 메시지 파싱
+            const msg = this.lastAlertMessage;
+            log.info(`[Alert 감지] ${msg.substring(0, 60)}...`);
 
-            // 댓글에서 실제 포인트 파싱 시도
-            const reward = await this._parseRewardFromComment();
-            return { success: true, reward };
+            let result = { success: false, reward: 0 };
+
+            // 3. 성공/실패 판단 및 포인트 계산
+            if (msg.includes('피해를 주었습니다')) {
+                // 공격 성공!
+                this.attackCount++;
+                this.lastAttackedRaidUrl = this.page.url();
+
+                // "N포인트를 흡수하였습니다" 파싱
+                const absorbMatch = msg.match(/(\d+)포인트를 흡수/);
+                if (absorbMatch) {
+                    const reward = parseInt(absorbMatch[1], 10);
+                    this.totalReward += reward;
+                    log.info(`★ 공격 성공! +${reward} MP (총 ${this.totalReward} MP)`);
+                    result = { success: true, reward };
+                } else {
+                    log.warn('포인트 파싱 실패, 기본값 10');
+                    result = { success: true, reward: 10 };
+                }
+            } else if (msg.includes('빼앗겼습니다') || msg.includes('빼앗')) {
+                // 반격당함
+                const lossMatch = msg.match(/(\d+)포인트를 빼/);
+                if (lossMatch) {
+                    const loss = parseInt(lossMatch[1], 10);
+                    this.totalReward -= loss;
+                    log.warn(`★ 반격당함! -${loss} MP (총 ${this.totalReward} MP)`);
+                    result = { success: false, reward: -loss };
+                }
+            } else if (msg.includes('처치') || msg.includes('죽') || msg.includes('종료')) {
+                log.warn(`레이드 종료됨: ${msg}`);
+                this.raidEnded = true;
+            } else {
+                log.warn(`알 수 없는 메시지: ${msg.substring(0, 40)}`);
+            }
+
+            // 4. 확인 버튼 클릭 (사람처럼 2-4초 대기 후)
+            await this._acceptDialog();
+
+            return result;
 
         } catch (error) {
             log.error(`레이드 공격 실패: ${error.message}`);
