@@ -230,7 +230,21 @@ export class IdleBehavior {
                 }
 
                 if (!clicked) {
-                    log.warn('⚠️ 체크박스 자동 클릭 실패 - 수동으로 클릭해 주세요!');
+                    // 셀렉터 실패 시 고정 좌표로 클릭 (체크박스 위치)
+                    // 뷰포트 1360x1542 기준 체크박스 위치: 약 (270, 310)
+                    const checkboxX = 270;
+                    const checkboxY = 310;
+
+                    log.info(`🎯 고정 좌표로 클릭 시도: (${checkboxX}, ${checkboxY})`);
+                    this._setStatus(`🎯 체크박스 클릭 (${checkboxX}, ${checkboxY})`);
+
+                    // 사람처럼 마우스 이동 후 클릭
+                    await this.page.mouse.move(checkboxX, checkboxY, { steps: 10 });
+                    await sleep(randomInt(500, 1000));
+                    await this.page.mouse.click(checkboxX, checkboxY);
+
+                    log.info('✅ 고정 좌표 클릭 완료');
+                    clicked = true;
                 }
 
                 // 캡차 통과 대기 (최대 30초)
