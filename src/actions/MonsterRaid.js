@@ -61,9 +61,9 @@ export class MonsterRaid {
         this.lastAlertMessage = null;
         this.alertHandlerRegistered = false;
 
-        // 레이드 세션 추적 (같은 시간대에 중복 공격 방지)
-        // 형식: "HH:10" 또는 "HH:40"
-        this.lastRaidSession = null;
+        // 레이드 중복 공격 방지 (URL 기반)
+        // 같은 레이드 URL에는 한 번만 공격
+        this.lastAttackedRaidUrl = null;
     }
 
     /**
@@ -119,45 +119,21 @@ export class MonsterRaid {
     }
 
     /**
-     * 현재 레이드 시간인지 확인 (중복 공격 방지 포함)
+     * 현재 레이드 시간인지 확인
      * @returns {boolean}
      */
     isRaidTime() {
         const now = new Date();
-        const hour = now.getHours();
         const minutes = now.getMinutes();
 
         // 10분 ~ 20분, 40분 ~ 50분
         for (const startMin of RAID_CONFIG.RAID_MINUTES) {
             const endMin = startMin + RAID_CONFIG.RAID_DURATION;
             if (minutes >= startMin && minutes < endMin) {
-                // 현재 세션 ID (예: "05:10" 또는 "05:40")
-                const sessionId = `${hour}:${startMin}`;
-
-                // 이미 이 세션에서 공격했으면 false
-                if (this.lastRaidSession === sessionId) {
-                    log.debug(`이미 공격한 레이드 세션: ${sessionId}`);
-                    return false;
-                }
-
                 return true;
             }
         }
         return false;
-    }
-
-    /**
-     * 현재 레이드 세션 ID 반환
-     * @private
-     */
-    _getCurrentSessionId() {
-        const now = new Date();
-        const hour = now.getHours();
-        const minutes = now.getMinutes();
-
-        if (minutes >= 10 && minutes < 20) return `${hour}:10`;
-        if (minutes >= 40 && minutes < 50) return `${hour}:40`;
-        return null;
     }
 
     /**
@@ -274,7 +250,13 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            // 3. 레이드 상세 페이지로 이동
+            // 3. 이미 공격한 레이드인지 확인 (URL 기반)
+            if (this.lastAttackedRaidUrl === raid.url) {
+                log.info(`이미 공격한 레이드 (스킵): ${raid.name}`);
+                return { success: false, reward: 0 };
+            }
+
+            // 4. 레이드 상세 페이지로 이동
             log.info(`레이드 이동: ${raid.name}`);
             await this.browserEngine.goto(raid.url);
             await sleep(randomInt(2000, 3000));
@@ -282,7 +264,15 @@ export class MonsterRaid {
             // alert 초기화
             this.lastAlertMessage = null;
 
-            // 4. 공격 버튼 대기 (화면에 나올 때까지)
+            // 5. 캡차 이미지 확인 (있으면 이미 공격한 것)
+            const hasCaptcha = await this.page.$('img[src*="captcha"]');
+            if (hasCaptcha) {
+                log.warn('캡차 감지됨 - 이미 공격한 레이드 (스킵)');
+                this.lastAttackedRaidUrl = raid.url; // 기록해서 다시 안 들어가게
+                return { success: false, reward: 0 };
+            }
+
+            // 6. 공격 버튼 대기 (화면에 나올 때까지)
             try {
                 await this.page.waitForSelector(RAID_CONFIG.SELECTORS.ATTACK_BUTTON, {
                     visible: true,
@@ -293,7 +283,7 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            // 5. 공격 버튼 스크롤 (화면에 보이게)
+            // 7. 공격 버튼 스크롤 (화면에 보이게)
             const attackButton = await this.page.$(RAID_CONFIG.SELECTORS.ATTACK_BUTTON);
             if (!attackButton) {
                 log.error('공격 버튼을 찾을 수 없습니다.');
@@ -331,9 +321,9 @@ export class MonsterRaid {
                 // "피해를 주었습니다" = 성공!
                 if (msg.includes('피해를 주었습니다')) {
                     this.attackCount++;
-                    // 현재 세션 기록 (중복 공격 방지)
-                    this.lastRaidSession = this._getCurrentSessionId();
-                    log.info(`레이드 공격 성공! 세션: ${this.lastRaidSession}`);
+                    // 현재 레이드 URL 기록 (중복 공격 방지)
+                    this.lastAttackedRaidUrl = this.page.url();
+                    log.info(`레이드 공격 성공! URL: ${this.lastAttackedRaidUrl}`);
                     // 댓글에서 실제 포인트 파싱
                     const reward = await this._parseRewardFromComment();
                     return { success: true, reward };
@@ -353,8 +343,8 @@ export class MonsterRaid {
 
             // alert 없이도 성공으로 간주
             this.attackCount++;
-            this.lastRaidSession = this._getCurrentSessionId();
-            log.info(`레이드 공격 성공! 세션: ${this.lastRaidSession}`);
+            this.lastAttackedRaidUrl = this.page.url();
+            log.info(`레이드 공격 성공! URL: ${this.lastAttackedRaidUrl}`);
 
             // 댓글에서 실제 포인트 파싱 시도
             const reward = await this._parseRewardFromComment();
