@@ -166,9 +166,17 @@ export class Orchestrator {
                         this.monsterRaid.attackCount,
                         this.stats.raidReward
                     );
+                    log.info(`레이드 공격 완료! +${result.reward} MP`);
                 }
 
-                await sleep(5 * 60 * 1000);
+                // 레이드 후 광산 페이지로 복귀
+                this._updateUI('⏳ 광산 복귀 중...');
+                await sleep(randomInt(3000, 5000));
+                await this.mineGame?.autoNavigateToAliveMine?.();
+
+                // 5분 대기 (UI 갱신 포함)
+                this._updateUI('💤 5분 대기...');
+                await this._waitWithUIUpdate(5 * 60 * 1000);
                 break;
             }
 
