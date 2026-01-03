@@ -157,12 +157,8 @@ export class IdleBehavior {
             // 새로고침
             await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
 
-            // 클라우드플레어 처리 대기 (설정에서 읽기, 기본 20초)
-            const cfWaitMs = CONFIG.IDLE_BEHAVIOR?.CF_WAIT_MS || 20000;
-            const cfWaitSec = Math.floor(cfWaitMs / 1000);
-            this._setStatus(`⏳ 클라우드플레어 대기 (${cfWaitSec}초)`);
-            log.info(`⏳ 클라우드플레어 처리 대기 중... (${cfWaitSec}초)`);
-            await sleep(cfWaitMs);
+            // 클라우드플레어 체크박스 캡차 감지 및 처리
+            await this._handleCloudflareChallenge();
 
             // 현재 URL 갱신
             this.originalUrl = this.page.url();
@@ -172,6 +168,96 @@ export class IdleBehavior {
         } catch (error) {
             log.warn(`새로고침 실패 (무시): ${error.message}`);
             this._setStatus('⏳ 대기 중');
+        }
+    }
+
+    /**
+     * 클라우드플레어 체크박스 캡차 처리
+     * @private
+     */
+    async _handleCloudflareChallenge() {
+        try {
+            // 2초 대기 (페이지 로드)
+            await sleep(2000);
+
+            // 클라우드플레어 체크박스 셀렉터들
+            const cfSelectors = [
+                'iframe[src*="challenges.cloudflare.com"]',
+                'iframe[title*="Cloudflare"]',
+                '#turnstile-wrapper iframe',
+                '.cf-turnstile iframe',
+            ];
+
+            let cfFrame = null;
+            for (const selector of cfSelectors) {
+                const frame = await this.page.$(selector);
+                if (frame) {
+                    log.info('⚠️ 클라우드플레어 체크박스 캡차 감지!');
+                    cfFrame = frame;
+                    break;
+                }
+            }
+
+            if (cfFrame) {
+                // 체크박스 클릭 시도
+                this._setStatus('🔐 캡차 처리 중...');
+                log.info('🔐 체크박스 클릭 시도...');
+
+                try {
+                    const frameHandle = await cfFrame.contentFrame();
+                    if (frameHandle) {
+                        // iframe 내부의 체크박스 클릭
+                        const checkbox = await frameHandle.$('input[type="checkbox"], .ctp-checkbox-container, label');
+                        if (checkbox) {
+                            await checkbox.click();
+                            log.info('✅ 체크박스 클릭 성공!');
+                        } else {
+                            // 체크박스 못 찾으면 iframe 중앙 클릭
+                            const box = await cfFrame.boundingBox();
+                            if (box) {
+                                await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+                                log.info('✅ iframe 중앙 클릭');
+                            }
+                        }
+                    }
+                } catch (e) {
+                    log.warn(`체크박스 자동 클릭 실패: ${e.message}`);
+                }
+
+                // 캡차 처리 대기 (30초 - 사용자가 수동 클릭할 시간)
+                log.info('⏳ 캡차 처리 대기 중... (30초)');
+                this._setStatus('⏳ 캡차 처리 대기 (30초)');
+
+                for (let i = 30; i > 0; i--) {
+                    // 캡차가 사라졌는지 확인
+                    let stillHasCaptcha = false;
+                    for (const selector of cfSelectors) {
+                        if (await this.page.$(selector)) {
+                            stillHasCaptcha = true;
+                            break;
+                        }
+                    }
+
+                    if (!stillHasCaptcha) {
+                        log.info('✅ 캡차 통과!');
+                        break;
+                    }
+
+                    if (i % 10 === 0) {
+                        log.info(`⏳ 캡차 대기 중... ${i}초`);
+                    }
+                    await sleep(1000);
+                }
+            } else {
+                // 캡차 없으면 일반 대기
+                const cfWaitMs = CONFIG.IDLE_BEHAVIOR?.CF_WAIT_MS || 20000;
+                const cfWaitSec = Math.floor(cfWaitMs / 1000);
+                this._setStatus(`⏳ 클라우드플레어 대기 (${cfWaitSec}초)`);
+                log.info(`⏳ 클라우드플레어 처리 대기 중... (${cfWaitSec}초)`);
+                await sleep(cfWaitMs);
+            }
+        } catch (error) {
+            log.warn(`캡차 처리 에러 (무시): ${error.message}`);
         }
     }
 
