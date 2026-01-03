@@ -172,7 +172,8 @@ export class IdleBehavior {
     }
 
     /**
-     * 클라우드플레어 체크박스 캡차 처리
+     * 클라우드플레어 챌린지 페이지 처리
+     * 전체 페이지가 클라우드플레어 페이지로 바뀌는 경우와 iframe 체크박스 모두 처리
      * @private
      */
     async _handleCloudflareChallenge() {
@@ -180,66 +181,68 @@ export class IdleBehavior {
             // 2초 대기 (페이지 로드)
             await sleep(2000);
 
-            // 클라우드플레어 체크박스 셀렉터들
-            const cfSelectors = [
-                'iframe[src*="challenges.cloudflare.com"]',
-                'iframe[title*="Cloudflare"]',
-                '#turnstile-wrapper iframe',
-                '.cf-turnstile iframe',
-            ];
+            // 클라우드플레어 페이지 감지 방법들
+            const isCloudflare = await this._isCloudflareChallengePage();
 
-            let cfFrame = null;
-            for (const selector of cfSelectors) {
-                const frame = await this.page.$(selector);
-                if (frame) {
-                    log.info('⚠️ 클라우드플레어 체크박스 캡차 감지!');
-                    cfFrame = frame;
-                    break;
-                }
-            }
-
-            if (cfFrame) {
-                // 체크박스 클릭 시도
+            if (isCloudflare) {
+                log.info('⚠️ 클라우드플레어 챌린지 페이지 감지!');
                 this._setStatus('🔐 캡차 처리 중...');
-                log.info('🔐 체크박스 클릭 시도...');
 
-                try {
-                    const frameHandle = await cfFrame.contentFrame();
-                    if (frameHandle) {
-                        // iframe 내부의 체크박스 클릭
-                        const checkbox = await frameHandle.$('input[type="checkbox"], .ctp-checkbox-container, label');
-                        if (checkbox) {
-                            await checkbox.click();
-                            log.info('✅ 체크박스 클릭 성공!');
-                        } else {
-                            // 체크박스 못 찾으면 iframe 중앙 클릭
-                            const box = await cfFrame.boundingBox();
-                            if (box) {
-                                await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-                                log.info('✅ iframe 중앙 클릭');
+                // 체크박스 클릭 시도 (여러 셀렉터)
+                const checkboxSelectors = [
+                    // 클라우드플레어 Turnstile iframe
+                    'iframe[src*="challenges.cloudflare.com"]',
+                    'iframe[title*="Cloudflare"]',
+                    '#turnstile-wrapper iframe',
+                    '.cf-turnstile iframe',
+                    // 페이지 내 직접 체크박스
+                    'input[type="checkbox"]',
+                    '.ctp-checkbox-container',
+                    '#challenge-stage input',
+                    'label[for*="challenge"]',
+                ];
+
+                let clicked = false;
+                for (const selector of checkboxSelectors) {
+                    try {
+                        const element = await this.page.$(selector);
+                        if (element) {
+                            // iframe인 경우
+                            if (selector.includes('iframe')) {
+                                const box = await element.boundingBox();
+                                if (box) {
+                                    await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+                                    log.info(`✅ 클릭 성공: ${selector} (iframe 중앙)`);
+                                    clicked = true;
+                                    break;
+                                }
+                            } else {
+                                // 일반 요소
+                                await element.click();
+                                log.info(`✅ 클릭 성공: ${selector}`);
+                                clicked = true;
+                                break;
                             }
                         }
+                    } catch (e) {
+                        // 다음 셀렉터 시도
                     }
-                } catch (e) {
-                    log.warn(`체크박스 자동 클릭 실패: ${e.message}`);
                 }
 
-                // 캡차 처리 대기 (30초 - 사용자가 수동 클릭할 시간)
-                log.info('⏳ 캡차 처리 대기 중... (30초)');
-                this._setStatus('⏳ 캡차 처리 대기 (30초)');
+                if (!clicked) {
+                    log.warn('⚠️ 체크박스 자동 클릭 실패 - 수동으로 클릭해 주세요!');
+                }
+
+                // 캡차 통과 대기 (최대 30초)
+                log.info('⏳ 캡차 통과 대기 중... (수동 클릭 필요할 수 있음)');
+                this._setStatus('⏳ 캡차 대기 (30초)');
 
                 for (let i = 30; i > 0; i--) {
-                    // 캡차가 사라졌는지 확인
-                    let stillHasCaptcha = false;
-                    for (const selector of cfSelectors) {
-                        if (await this.page.$(selector)) {
-                            stillHasCaptcha = true;
-                            break;
-                        }
-                    }
-
-                    if (!stillHasCaptcha) {
+                    // 클라우드플레어 페이지가 아니면 통과
+                    const stillCf = await this._isCloudflareChallengePage();
+                    if (!stillCf) {
                         log.info('✅ 캡차 통과!');
+                        await sleep(2000); // 페이지 로드 대기
                         break;
                     }
 
@@ -249,7 +252,7 @@ export class IdleBehavior {
                     await sleep(1000);
                 }
             } else {
-                // 캡차 없으면 일반 대기
+                // 클라우드플레어 아니면 일반 대기
                 const cfWaitMs = CONFIG.IDLE_BEHAVIOR?.CF_WAIT_MS || 20000;
                 const cfWaitSec = Math.floor(cfWaitMs / 1000);
                 this._setStatus(`⏳ 클라우드플레어 대기 (${cfWaitSec}초)`);
@@ -258,6 +261,58 @@ export class IdleBehavior {
             }
         } catch (error) {
             log.warn(`캡차 처리 에러 (무시): ${error.message}`);
+        }
+    }
+
+    /**
+     * 클라우드플레어 챌린지 페이지인지 확인
+     * @private
+     * @returns {Promise<boolean>}
+     */
+    async _isCloudflareChallengePage() {
+        try {
+            // 방법 1: 페이지 제목 확인
+            const title = await this.page.title();
+            if (title.includes('Just a moment') ||
+                title.includes('Checking your browser') ||
+                title.includes('Attention Required') ||
+                title.includes('보안검사')) {
+                return true;
+            }
+
+            // 방법 2: URL 확인
+            const url = this.page.url();
+            if (url.includes('challenge') || url.includes('cdn-cgi')) {
+                return true;
+            }
+
+            // 방법 3: 페이지 내 클라우드플레어 요소 확인
+            const cfElements = await this.page.evaluate(() => {
+                const selectors = [
+                    '#cf-spinner-please-wait',
+                    '#cf-please-wait',
+                    '.cf-browser-verification',
+                    '#challenge-running',
+                    '#challenge-stage',
+                    'div[id*="turnstile"]',
+                    'div[class*="cf-turnstile"]',
+                ];
+                for (const sel of selectors) {
+                    if (document.querySelector(sel)) return true;
+                }
+                // 텍스트로도 확인
+                const body = document.body?.innerText || '';
+                if (body.includes('Checking your browser') ||
+                    body.includes('This process is automatic') ||
+                    body.includes('Verify you are human')) {
+                    return true;
+                }
+                return false;
+            });
+
+            return cfElements;
+        } catch (error) {
+            return false;
         }
     }
 
