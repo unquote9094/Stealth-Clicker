@@ -42,9 +42,11 @@ export class IdleBehavior {
         const { onTick, onStatus } = options;
         this.onStatus = onStatus;  // 저장해서 다른 함수에서도 사용
         const endTime = Date.now() + durationMs;
+        const startTime = Date.now();
         this.isActive = true;
         this.visitCount = 0;  // 초기화
         this.originalUrl = this.page.url();  // 원래 URL 저장
+        this.hasRefreshed = false;  // 새로고침 여부 (대기당 1회)
 
         log.debug(`대기 시작: ${Math.floor(durationMs / 1000)}초`);
 
@@ -61,6 +63,13 @@ export class IdleBehavior {
             const waitTime = Math.min(actionInterval, remaining);
 
             if (waitTime > 5000) {
+                // 2분 경과 후 새로고침 (1회만)
+                const elapsed = Date.now() - startTime;
+                if (!this.hasRefreshed && elapsed > 120000) {
+                    await this._refreshPage();
+                    this.hasRefreshed = true;
+                }
+
                 // 랜덤 행동 선택
                 // 50% 마우스, 25% 스크롤, 15% 페이지 방문, 10% 대기
                 const action = randomInt(1, 100);
@@ -120,6 +129,35 @@ export class IdleBehavior {
             log.debug(`스크롤: ${amount}px`);
         } catch (error) {
             // 에러 무시
+        }
+    }
+
+    /**
+     * 페이지 새로고침 (클라우드플레어 세션 유지용)
+     * Frame 분리 에러 방지를 위해 주기적으로 새로고침
+     * @private
+     */
+    async _refreshPage() {
+        try {
+            this._setStatus('🔄 새로고침 중...');
+            log.info('🔄 페이지 새로고침 (세션 유지)');
+
+            // 새로고침
+            await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+
+            // 클라우드플레어 처리 대기 (20초)
+            this._setStatus('⏳ 클라우드플레어 대기 (20초)');
+            log.info('⏳ 클라우드플레어 처리 대기 중... (20초)');
+            await sleep(20000);
+
+            // 현재 URL 갱신
+            this.originalUrl = this.page.url();
+
+            this._setStatus('⏳ 대기 중');
+            log.info('✅ 새로고침 완료');
+        } catch (error) {
+            log.warn(`새로고침 실패 (무시): ${error.message}`);
+            this._setStatus('⏳ 대기 중');
         }
     }
 
