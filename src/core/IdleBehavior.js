@@ -271,12 +271,29 @@ export class IdleBehavior {
      */
     async _isCloudflareChallengePage() {
         try {
-            // 방법 1: 페이지 제목 확인
+            // 디버깅: 현재 페이지 정보 로그
             const title = await this.page.title();
+            const url = this.page.url();
+            log.debug(`[CF체크] 제목: "${title}", URL: ${url.substring(0, 50)}...`);
+
+            // 디버깅: 페이지 저장 (data 폴더에)
+            try {
+                const fs = await import('fs');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+                const htmlPath = `./data/cf_debug_${timestamp}.html`;
+                const content = await this.page.content();
+                fs.writeFileSync(htmlPath, content, 'utf8');
+                log.debug(`[CF체크] 페이지 저장: ${htmlPath}`);
+            } catch (e) {
+                // 무시
+            }
+
+            // 방법 1: 페이지 제목 확인
             if (title.includes('Just a moment') ||
                 title.includes('Checking your browser') ||
                 title.includes('Attention Required') ||
                 title.includes('보안검사')) {
+                log.info(`[CF감지] 제목으로 감지: "${title}"`);
                 return true;
             }
 
