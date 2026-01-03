@@ -192,27 +192,45 @@ export class Orchestrator {
     }
 
     /**
-     * UI 갱신하면서 대기 (레이드 시간 체크 포함)
+     * UI 갱신하면서 대기 (레이드 시간 체크 + IdleBehavior 사용)
      * @private
      */
     async _waitWithUIUpdate(durationMs) {
         const endTime = Date.now() + durationMs;
         let lastRaidCheck = 0;
 
-        while (Date.now() < endTime && this.isRunning) {
-            const remaining = endTime - Date.now();
-            this.terminalUI.updateWait(remaining);
+        // IdleBehavior 가져오기 (mineGame에서)
+        const idleBehavior = this.mineGame?.idleBehavior;
 
-            // 레이드 시간 체크 (1분마다)
+        if (!idleBehavior) {
+            // IdleBehavior 없으면 기존 방식 (fallback)
+            log.warn('IdleBehavior 없음 - 기존 대기 방식 사용');
+            while (Date.now() < endTime && this.isRunning) {
+                this.terminalUI.updateWait(endTime - Date.now());
+                await sleep(1000);
+            }
+            this.terminalUI.updateWait(0);
+            return;
+        }
+
+        // 레이드 체크용 interval (1분마다)
+        const raidCheckInterval = setInterval(async () => {
+            if (!this.isRunning) {
+                clearInterval(raidCheckInterval);
+                return;
+            }
+
             const now = Date.now();
             if (CONFIG.FEATURES.RAID && this.monsterRaid && now - lastRaidCheck > 60000) {
                 lastRaidCheck = now;
 
                 if (this.monsterRaid.isRaidTime()) {
+                    // 레이드 시간! IdleBehavior 중지하고 레이드 처리
+                    idleBehavior.stop();
+
                     this._updateUI('⚔️ 레이드 시간!');
                     log.info('대기 중 레이드 시간 감지 - 공격 시도');
 
-                    // 레이드로 이동 전 대기 (사람처럼)
                     await sleep(randomInt(3000, 5000));
 
                     const result = await this.monsterRaid.attackOnce();
@@ -226,18 +244,27 @@ export class Orchestrator {
                         log.info(`레이드 공격 완료! +${result.reward} MP`);
                     }
 
-                    // 레이드 후 광산 페이지로 복귀 전 대기
+                    // 레이드 후 광산 복귀
                     this._updateUI('⏳ 광산 복귀 중...');
                     await sleep(randomInt(3000, 5000));
-                    // 버그 수정: navigateToMine()은 URL 인자 필수 → autoNavigateToAliveMine() 사용
                     await this.mineGame?.autoNavigateToAliveMine?.();
                     this._updateUI('⏳ 대기 중');
                 }
             }
+        }, 10000); // 10초마다 체크
 
-            await sleep(1000);
-        }
+        // IdleBehavior로 대기 (새로고침, 랜덤 페이지 방문, 마우스 이동 등)
+        await idleBehavior.idle(durationMs, {
+            onTick: (remaining) => {
+                this.terminalUI.updateWait(remaining);
+            },
+            onStatus: (status) => {
+                this._updateUI(status);
+            }
+        });
 
+        // interval 정리
+        clearInterval(raidCheckInterval);
         this.terminalUI.updateWait(0);
     }
 
