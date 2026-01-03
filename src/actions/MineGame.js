@@ -614,10 +614,11 @@ export class MineGame {
      * @param {number} options.maxCount - 최대 채굴 횟수 (0 = 무제한)
      * @param {Function} options.onMine - 채굴 시 콜백
      * @param {Function} options.onWait - 대기 시 콜백
+     * @param {Function} options.onStatus - 상태 변경 콜백 (UI 표시용)
      * @returns {Promise<void>}
      */
     async startMiningLoop(options = {}) {
-        const { maxCount = 0, onMine, onWait } = options;
+        const { maxCount = 0, onMine, onWait, onStatus } = options;
 
         this.isRunning = true;
         this.lastRestTime = Date.now(); // 휴식 패턴용
@@ -660,7 +661,7 @@ export class MineGame {
 
             // 대기 (사람처럼 마우스 이동하며 대기)
             if (this.idleBehavior) {
-                await this.idleBehavior.idle(waitTime);
+                await this.idleBehavior.idle(waitTime, { onStatus });
             } else {
                 // fallback: 단순 대기
                 const endTime = Date.now() + waitTime;

@@ -35,10 +35,12 @@ export class IdleBehavior {
      * @param {number} durationMs - 대기 시간 (밀리초)
      * @param {Object} options - 옵션
      * @param {Function} options.onTick - 매 초마다 콜백 (남은 시간 전달)
+     * @param {Function} options.onStatus - 상태 변경 콜백 (UI 표시용)
      * @returns {Promise<void>}
      */
     async idle(durationMs, options = {}) {
-        const { onTick } = options;
+        const { onTick, onStatus } = options;
+        this.onStatus = onStatus;  // 저장해서 다른 함수에서도 사용
         const endTime = Date.now() + durationMs;
         this.isActive = true;
         this.visitCount = 0;  // 초기화
@@ -65,15 +67,19 @@ export class IdleBehavior {
 
                 if (action <= 50) {
                     // 50% 확률: 마우스 이동
+                    this._setStatus('🖱️ 마우스 이동');
                     await this._randomMouseMove();
                 } else if (action <= 75) {
                     // 25% 확률: 스크롤
+                    this._setStatus('📜 스크롤');
                     await this._randomScroll();
                 } else if (action <= 90) {
                     // 15% 확률: 랜덤 페이지 방문
                     await this._visitRandomPage();
+                } else {
+                    // 10% 확률: 휴식
+                    this._setStatus('💤 휴식');
                 }
-                // 10% 확률: 아무것도 안 함 (휴식)
             }
 
             // 대기 (1초 단위로 체크)
@@ -137,12 +143,7 @@ export class IdleBehavior {
                 return;
             }
 
-            // 확률 체크
-            const chance = randomInt(1, 100);
-            if (chance > config.VISIT_CHANCE) {
-                log.debug('방문 확률 미달, 스킵');
-                return;
-            }
+            // 확률 체크 제거됨 - idle()에서 이미 15% 확률로 호출됨
 
             // 현재 URL에서 도메인 추출
             const currentUrl = this.page.url();
@@ -162,6 +163,8 @@ export class IdleBehavior {
             const randomPage = pages[randomInt(0, pages.length - 1)];
             const visitUrl = `${domain}${randomPage}`;
 
+            // UI 상태 표시
+            this._setStatus(`🔀 ${randomPage.split('?')[0]} 방문 중...`);
             log.info(`🔀 랜덤 페이지 방문: ${randomPage}`);
 
             // 페이지 이동
@@ -178,9 +181,11 @@ export class IdleBehavior {
             await sleep(stayTime / 2);
 
             // 원래 페이지로 복귀
+            this._setStatus('↩️ 광산 복귀 중...');
             log.info(`↩️ 원래 페이지 복귀: ${this.originalUrl.substring(0, 50)}...`);
             await this.page.goto(this.originalUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
             await sleep(randomInt(1000, 2000));
+            this._setStatus('⏳ 대기 중');
 
         } catch (error) {
             log.warn(`페이지 방문 실패 (무시): ${error.message}`);
@@ -192,6 +197,16 @@ export class IdleBehavior {
                     // 복귀도 실패하면 그냥 무시
                 }
             }
+        }
+    }
+
+    /**
+     * UI 상태 표시 헬퍼
+     * @private
+     */
+    _setStatus(status) {
+        if (this.onStatus) {
+            this.onStatus(status);
         }
     }
 
