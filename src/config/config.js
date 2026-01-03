@@ -84,6 +84,24 @@ export const CONFIG = {
         },
     },
 
+    // ===== 대기 중 랜덤 페이지 방문 =====
+    IDLE_BROWSING: {
+        ENABLED: true,         // 기능 ON/OFF
+        // 방문할 페이지 목록 (상대 경로)
+        PAGES: [
+            '/webtoon',        // 웹툰 목록
+            '/comic',          // 만화 목록
+            '/best',           // 인기글
+            '/free',           // 자유게시판
+        ],
+        VISIT_CHANCE: 15,      // 대기 중 방문 확률 (%) - 너무 높으면 의심됨
+        STAY_TIME: {
+            MIN: 3000,         // 최소 체류 시간 (3초)
+            MAX: 10000,        // 최대 체류 시간 (10초)
+        },
+        MAX_VISITS: 2,         // 대기 1회당 최대 방문 횟수
+    },
+
     // ===== 마우스 설정 =====
     MOUSE: {
         CLICK_OFFSET: {
