@@ -312,7 +312,7 @@ export class MonsterRaid {
                 return { success: false, reward: 0 };
             }
 
-            await sleep(1500); // 서버 응답 대기
+            await sleep(5000); // 서버 응답 대기 (dialog 핸들러 1-3초 대기 고려)
 
             // alert 메시지 확인
             if (this.lastAlertMessage) {
