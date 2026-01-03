@@ -204,9 +204,9 @@ export class IdleBehavior {
 
                 if (!hasCheckbox) {
                     // 체크박스 없음 = 자동 통과 대기
-                    log.info('📌 체크박스 없음 - 자동 통과 대기 (10초)');
-                    this._setStatus('⏳ 자동 통과 대기 (10초)');
-                    await sleep(10000);
+                    log.info('📌 체크박스 없음 - 자동 통과 대기 (20초)');
+                    this._setStatus('⏳ 자동 통과 대기 (20초)');
+                    await sleep(20000);
                     return; // 클릭하지 않고 종료
                 }
 
