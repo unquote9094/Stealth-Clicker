@@ -229,7 +229,8 @@ export class Orchestrator {
                     // 레이드 후 광산 페이지로 복귀 전 대기
                     this._updateUI('⏳ 광산 복귀 중...');
                     await sleep(randomInt(3000, 5000));
-                    await this.mineGame?.navigateToMine?.() ?? await sleep(2000);
+                    // 버그 수정: navigateToMine()은 URL 인자 필수 → autoNavigateToAliveMine() 사용
+                    await this.mineGame?.autoNavigateToAliveMine?.();
                     this._updateUI('⏳ 대기 중');
                 }
             }
