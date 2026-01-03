@@ -266,12 +266,8 @@ export class IdleBehavior {
                     await sleep(1000);
                 }
             } else {
-                // 클라우드플레어 아니면 일반 대기
-                const cfWaitMs = CONFIG.IDLE_BEHAVIOR?.CF_WAIT_MS || 20000;
-                const cfWaitSec = Math.floor(cfWaitMs / 1000);
-                this._setStatus(`⏳ 클라우드플레어 대기 (${cfWaitSec}초)`);
-                log.info(`⏳ 클라우드플레어 처리 대기 중... (${cfWaitSec}초)`);
-                await sleep(cfWaitMs);
+                // 클라우드플레어 아니면 대기 없이 바로 진행
+                log.debug('클라우드플레어 아님 - 바로 진행');
             }
         } catch (error) {
             log.warn(`캡차 처리 에러 (무시): ${error.message}`);
