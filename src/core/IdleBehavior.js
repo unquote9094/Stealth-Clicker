@@ -368,7 +368,10 @@ export class IdleBehavior {
             await this.page.goto(visitUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
             this.visitCount++;
 
-            // 체류 시간 (3~10초)
+            // 클라우드플레어 캡차 처리 (페이지 이동 후)
+            await this._handleCloudflareChallenge();
+
+            // 체류 시간 (설정에서 읽기)
             const stayTime = randomInt(config.STAY_TIME.MIN, config.STAY_TIME.MAX);
             log.debug(`페이지 체류: ${(stayTime / 1000).toFixed(1)}초`);
 
@@ -381,6 +384,10 @@ export class IdleBehavior {
             this._setStatus('↩️ 광산 복귀 중...');
             log.info(`↩️ 원래 페이지 복귀: ${this.originalUrl.substring(0, 50)}...`);
             await this.page.goto(this.originalUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
+
+            // 복귀 후에도 클라우드플레어 처리
+            await this._handleCloudflareChallenge();
+
             await sleep(randomInt(1000, 2000));
             this._setStatus('⏳ 대기 중');
 
