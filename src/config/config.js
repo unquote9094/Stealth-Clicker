@@ -87,17 +87,18 @@ export const CONFIG = {
     // ===== 대기 중 랜덤 페이지 방문 =====
     IDLE_BROWSING: {
         ENABLED: true,         // 기능 ON/OFF
-        // 방문할 페이지 목록 (상대 경로)
+        // 방문할 페이지 목록 (전체 경로 - 도메인 숫자만 바뀜)
         PAGES: [
-            '/webtoon',        // 웹툰 목록
-            '/comic',          // 만화 목록
-            '/best',           // 인기글
-            '/free',           // 자유게시판
+            '/toki_free',                           // 자유게시판
+            '/humor',                               // 유머게시판
+            '/webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0',  // 일반웹툰
+            '/webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0',  // 완결웹툰
+            '/webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0',  // 성인웹툰
         ],
         VISIT_CHANCE: 15,      // 대기 중 방문 확률 (%) - 너무 높으면 의심됨
         STAY_TIME: {
-            MIN: 3000,         // 최소 체류 시간 (3초)
-            MAX: 10000,        // 최대 체류 시간 (10초)
+            MIN: 10000,        // 최소 체류 시간 (10초)
+            MAX: 30000,        // 최대 체류 시간 (30초)
         },
         MAX_VISITS: 2,         // 대기 1회당 최대 방문 횟수
     },
