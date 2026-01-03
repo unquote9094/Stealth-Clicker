@@ -186,6 +186,31 @@ export class IdleBehavior {
 
             if (isCloudflare) {
                 log.info('⚠️ 클라우드플레어 챌린지 페이지 감지!');
+
+                // 체크박스 iframe이 있는지 확인 (5초 대기하며 확인)
+                this._setStatus('🔍 체크박스 확인 중...');
+                log.info('🔍 체크박스 iframe 로드 대기 중... (최대 5초)');
+
+                let hasCheckbox = false;
+                for (let i = 0; i < 5; i++) {
+                    const cfIframe = await this.page.$('iframe[src*="challenges.cloudflare.com"]');
+                    if (cfIframe) {
+                        hasCheckbox = true;
+                        log.info('✅ 체크박스 iframe 발견!');
+                        break;
+                    }
+                    await sleep(1000);
+                }
+
+                if (!hasCheckbox) {
+                    // 체크박스 없음 = 자동 통과 대기
+                    log.info('📌 체크박스 없음 - 자동 통과 대기 (10초)');
+                    this._setStatus('⏳ 자동 통과 대기 (10초)');
+                    await sleep(10000);
+                    return; // 클릭하지 않고 종료
+                }
+
+                // 체크박스가 있으면 클릭 진행
                 this._setStatus('🔐 캡차 처리 중...');
 
                 // 체크박스 클릭 시도 (여러 셀렉터)
