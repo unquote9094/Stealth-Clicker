@@ -366,33 +366,55 @@ export class MonsterRaid {
         try {
             const nickname = CONFIG.AUTH.NICKNAME;
 
-            // 댓글 목록에서 내 닉네임 찾기 (최신 3개만 확인)
-            const comments = await this.page.$$eval(
+            // 모든 댓글 먼저 확인 (디버깅)
+            const allComments = await this.page.$$eval(
                 '#bo_vc .media',
-                (els, nick) => {
-                    return els.slice(0, 10).map(el => {
+                (els) => {
+                    return els.slice(0, 5).map(el => {
                         const nameEl = el.querySelector('.media-heading');
                         const contentEl = el.querySelector('.media-content');
                         return {
-                            name: nameEl?.textContent.trim() || '',
-                            content: contentEl?.textContent.trim() || ''
+                            name: nameEl?.textContent.trim() || '(이름없음)',
+                            content: contentEl?.textContent.trim().substring(0, 50) || '(내용없음)'
                         };
-                    }).filter(c => c.name.includes(nick));
+                    });
+                }
+            );
+
+            // 디버깅 로그 (warn으로 콘솔에 출력)
+            log.warn(`[댓글 파싱] 닉네임: "${nickname}", 댓글 ${allComments.length}개`);
+            allComments.slice(0, 3).forEach((c, i) => {
+                log.warn(`  [${i}] ${c.name}: ${c.content}`);
+            });
+
+            // 내 닉네임이 포함된 댓글 찾기
+            const myComments = allComments.filter(c => c.name.includes(nickname));
+
+            if (myComments.length === 0) {
+                log.warn(`내 댓글을 찾을 수 없음 (닉네임: ${nickname})`);
+                return 10; // 기본값
+            }
+
+            // 가장 최신 내 댓글 (전체 내용 다시 가져오기)
+            const myCommentFull = await this.page.$$eval(
+                '#bo_vc .media',
+                (els, nick) => {
+                    for (const el of els) {
+                        const nameEl = el.querySelector('.media-heading');
+                        if (nameEl?.textContent.includes(nick)) {
+                            const contentEl = el.querySelector('.media-content');
+                            return contentEl?.textContent.trim() || '';
+                        }
+                    }
+                    return '';
                 },
                 nickname
             );
 
-            if (comments.length === 0) {
-                log.debug('내 댓글을 찾을 수 없음');
-                return 10; // 기본값
-            }
-
-            // 가장 최신 내 댓글
-            const myComment = comments[0].content;
-            log.debug(`내 댓글: ${myComment.substring(0, 50)}`);
+            log.warn(`[파싱] 내 댓글 전체: ${myCommentFull.substring(0, 80)}`);
 
             // "N포인트를 흡수하였습니다" 파싱
-            const absorbMatch = myComment.match(/(\d+)포인트를 흡수/);
+            const absorbMatch = myCommentFull.match(/(\d+)포인트를 흡수/);
             if (absorbMatch) {
                 const reward = parseInt(absorbMatch[1], 10);
                 log.info(`포인트 흡수: ${reward} MP`);
@@ -401,7 +423,7 @@ export class MonsterRaid {
             }
 
             // "N포인트를 빼앗겼습니다" (반격당함 - 손실)
-            const lossMatch = myComment.match(/(\d+)포인트를 빼/);
+            const lossMatch = myCommentFull.match(/(\d+)포인트를 빼/);
             if (lossMatch) {
                 const loss = parseInt(lossMatch[1], 10);
                 log.warn(`포인트 손실: -${loss} MP (반격당함)`);
@@ -411,7 +433,7 @@ export class MonsterRaid {
 
             return 10; // 기본값
         } catch (error) {
-            log.debug(`포인트 파싱 실패: ${error.message}`);
+            log.warn(`포인트 파싱 실패: ${error.message}`);
             return 10; // 기본값
         }
     }
