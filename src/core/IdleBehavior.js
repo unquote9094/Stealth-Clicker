@@ -187,31 +187,34 @@ export class IdleBehavior {
             if (isCloudflare) {
                 log.info('⚠️ 클라우드플레어 챌린지 페이지 감지!');
 
-                // 체크박스 iframe이 있는지 확인 (5초 대기하며 확인)
-                this._setStatus('🔍 체크박스 확인 중...');
-                log.info('🔍 체크박스 iframe 로드 대기 중... (최대 5초)');
+                // 충분히 페이지 로딩 대기 (5초)
+                this._setStatus('⏳ 페이지 로딩 대기 (5초)...');
+                log.info('⏳ 페이지 로딩 대기 중... (5초)');
+                await sleep(5000);
 
-                let hasCheckbox = false;
-                for (let i = 0; i < 5; i++) {
-                    const cfIframe = await this.page.$('iframe[src*="challenges.cloudflare.com"]');
-                    if (cfIframe) {
-                        hasCheckbox = true;
-                        log.info('✅ 체크박스 iframe 발견!');
-                        break;
-                    }
-                    await sleep(1000);
-                }
+                // "Verify you are human" 문구로 체크박스 페이지 감지
+                this._setStatus('🔍 체크박스 여부 확인 중...');
+                log.info('🔍 체크박스 여부 확인 중...');
 
-                if (!hasCheckbox) {
+                const hasVerifyText = await this.page.evaluate(() => {
+                    const body = document.body?.innerText || '';
+                    return body.includes('Verify you are human') ||
+                        body.includes('완료하여 사람임을 확인') ||
+                        body.includes('completing the action below');
+                });
+
+                if (!hasVerifyText) {
                     // 체크박스 없음 = 자동 통과 대기
-                    log.info('📌 체크박스 없음 - 자동 통과 대기 (20초)');
+                    log.info('📌 체크박스 없음 (자동 통과 타입) - 20초 대기');
                     this._setStatus('⏳ 자동 통과 대기 (20초)');
                     await sleep(20000);
                     return; // 클릭하지 않고 종료
                 }
 
+                log.info('✅ 체크박스 페이지 확인! (Verify you are human)');
+
                 // 체크박스가 있으면 클릭 진행
-                this._setStatus('🔐 캡차 처리 중...');
+                this._setStatus('🔐 체크박스 클릭 준비...');
 
                 // 체크박스 클릭 시도 (여러 셀렉터)
                 const checkboxSelectors = [
