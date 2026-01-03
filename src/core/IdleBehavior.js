@@ -236,12 +236,29 @@ export class IdleBehavior {
                     const checkboxY = 310;
 
                     log.info(`🎯 고정 좌표로 클릭 시도: (${checkboxX}, ${checkboxY})`);
-                    this._setStatus(`🎯 체크박스 클릭 (${checkboxX}, ${checkboxY})`);
 
-                    // 사람처럼 마우스 이동 후 클릭
-                    await this.page.mouse.move(checkboxX, checkboxY, { steps: 10 });
-                    await sleep(randomInt(500, 1000));
+                    // 1. 페이지 로드 충분히 대기 (3-5초)
+                    this._setStatus('⏳ 캡차 로딩 대기...');
+                    const loadWait = randomInt(3000, 5000);
+                    log.info(`⏳ 캡차 로딩 대기... (${(loadWait / 1000).toFixed(1)}초)`);
+                    await sleep(loadWait);
+
+                    // 2. 마우스 천천히 이동 (사람처럼)
+                    this._setStatus('🖱️ 마우스 이동 중...');
+                    log.info('🖱️ 마우스 천천히 이동 중...');
+                    await this.page.mouse.move(checkboxX, checkboxY, { steps: 30 }); // 30단계로 천천히
+
+                    // 3. 이동 후 잠시 대기 (1-2초)
+                    const hoverWait = randomInt(1000, 2000);
+                    await sleep(hoverWait);
+
+                    // 4. 클릭
+                    this._setStatus('🎯 체크박스 클릭!');
+                    log.info('🎯 체크박스 클릭!');
                     await this.page.mouse.click(checkboxX, checkboxY);
+
+                    // 5. 클릭 후 대기 (2-3초)
+                    await sleep(randomInt(2000, 3000));
 
                     log.info('✅ 고정 좌표 클릭 완료');
                     clicked = true;
