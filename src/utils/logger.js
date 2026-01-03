@@ -34,17 +34,25 @@ function ensureLogDir() {
 }
 
 /**
- * 현재 날짜 문자열 (YYYY-MM-DD)
+ * 현재 날짜 문자열 (YYYY-MM-DD) - 로컬 시간 기준
  */
 function getDateString() {
-    return new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 /**
- * 현재 시간 문자열 (HH:MM:SS)
+ * 현재 시간 문자열 (HH:MM:SS) - 로컬 시간 기준
  */
 function getTimeString() {
-    return new Date().toTimeString().split(' ')[0];
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
 }
 
 /**
