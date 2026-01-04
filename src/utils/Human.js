@@ -184,6 +184,8 @@ const Human = {
 
     /**
      * 클라우드플레어 통과 대기 (개선됨)
+     * - checkbox: 바로 클릭 (자동 통과 스킵)
+     * - auto: 자동 통과 대기
      * @param {import('puppeteer').Page} page - 페이지 객체
      * @returns {Promise<boolean>} 통과 여부
      */
@@ -197,49 +199,75 @@ const Human = {
         this._updateUI(`🔒 CF ${cfType} 처리 중...`);
         log.info(`⚠️ 클라우드플레어 감지됨: ${cfType}`);
 
-        // 1. 자동 통과 시도 (모든 CF 페이지에서 먼저 시도)
+        // checkbox 타입: 바로 클릭 (자동 통과 시도 스킵!)
+        if (cfType === 'checkbox') {
+            log.info('🎯 체크박스 타입 - 바로 클릭 시도');
+            this._updateUI('🎯 CF 체크박스 클릭...');
+
+            const cfConfig = CONFIG.CLOUDFLARE || {};
+            const x = cfConfig.CHECKBOX_X || 253;
+            const y = cfConfig.CHECKBOX_Y || 289;
+
+            await this.wait(2000, 3000); // 페이지 안정화
+            await this.clickAt(page, x, y);
+
+            log.info('⏳ 체크박스 검증 대기 (10~15초)...');
+            this._updateUI('⏳ CF 검증 대기...');
+            await this.wait(10000, 15000);
+
+            // 통과 확인
+            const stillCf = await this.checkCloudflare(page);
+            if (stillCf === 'none') {
+                log.info('✅ 클라우드플레어 체크박스 통과!');
+                log.cfPass('checkbox');
+                this._updateUI('✅ CF 통과!');
+                return true;
+            }
+
+            log.warn('❌ 체크박스 클릭 후에도 CF 페이지 - 실패');
+            log.cfFail();
+            this._updateUI('❌ CF 통과 실패');
+            return false;
+        }
+
+        // auto 타입: 자동 통과 대기
         log.info('🔄 자동 통과 대기 중 (15~20초)...');
         this._updateUI('🔄 CF 자동 대기 중...');
         await this.wait(15000, 20000);
 
         // 통과 확인
-        let stillCf = await this.checkCloudflare(page);
+        const stillCf = await this.checkCloudflare(page);
         if (stillCf === 'none') {
             log.info('✅ 클라우드플레어 자동 통과!');
-            log.cfPass('auto'); // 타임라인 이벤트
+            log.cfPass('auto');
             this._updateUI('✅ CF 통과!');
             return true;
         }
 
-        // 2. 자동 통과 실패 → 체크박스 클릭 시도
-        if (cfType === 'checkbox' || stillCf === 'checkbox') {
-            log.info('🎯 자동 통과 실패 - 체크박스 클릭 시도...');
+        // 자동 실패 시 체크박스 재시도
+        if (stillCf === 'checkbox') {
+            log.info('🎯 자동 실패 - 체크박스 클릭 시도');
             this._updateUI('🎯 CF 체크박스 클릭...');
 
-            // 설정에서 좌표 읽기 (기본값: 253, 289)
             const cfConfig = CONFIG.CLOUDFLARE || {};
             const x = cfConfig.CHECKBOX_X || 253;
             const y = cfConfig.CHECKBOX_Y || 289;
 
-            await this.wait(2000, 3000); // 페이지 안정화 대기
+            await this.wait(2000, 3000);
             await this.clickAt(page, x, y);
+            await this.wait(10000, 15000);
 
-            log.info('⏳ 체크박스 검증 대기 (10~15초)...');
-            this._updateUI('⏳ CF 검증 대기...');
-            await this.wait(10000, 15000); // 검증 대기
-
-            // 통과 확인
-            stillCf = await this.checkCloudflare(page);
-            if (stillCf === 'none') {
+            const stillCf2 = await this.checkCloudflare(page);
+            if (stillCf2 === 'none') {
                 log.info('✅ 클라우드플레어 체크박스 통과!');
-                log.cfPass('checkbox'); // 타임라인 이벤트
+                log.cfPass('checkbox');
                 this._updateUI('✅ CF 통과!');
                 return true;
             }
         }
 
         log.warn('❌ 클라우드플레어 통과 실패 - 수동 개입 필요');
-        log.cfFail(); // 타임라인 이벤트
+        log.cfFail();
         this._updateUI('❌ CF 통과 실패');
         return false;
     },
