@@ -33,7 +33,11 @@ export class Scheduler {
         // 타이머 (timestamp)
         this.nextMineTime = 0;           // 다음 채굴 시간
         this.lastRaidSlot = null;        // 마지막 레이드 슬롯 (중복 방지)
-        this.nextDownloadTime = 0;       // 다음 다운로드 시간
+
+        // 다운로드 시간 할당 (채굴 쿨타임 내에서)
+        this.downloadStartTime = 0;      // 다운로드 시작 시간
+        this.downloadEndTime = 0;        // 다운로드 종료 시간
+        this.isDownloading = false;      // 다운로드 중 여부
 
         // 통계
         this.stats = {
@@ -138,8 +142,8 @@ export class Scheduler {
             return;
         }
 
-        // 우선순위 3: 다운로드 (시간 되면)
-        if (CONFIG.FEATURES.DOWNLOAD && now >= this.nextDownloadTime) {
+        // 우선순위 3: 다운로드 시간대 (채굴 후 할당된 시간)
+        if (this._isDownloadTime()) {
             await this._doDownload();
             return;
         }
@@ -150,8 +154,8 @@ export class Scheduler {
             return;
         }
 
-        // UI 갱신만
-        this._updateUIRemaining();
+        // 상태 상세 표시 + UI 갱신
+        this._updateDetailedStatus();
     }
 
     /**
@@ -199,16 +203,55 @@ export class Scheduler {
         const extraMin = CONFIG.TIMING.MINE_EXTRA?.MIN || 0;
         const extraMax = CONFIG.TIMING.MINE_EXTRA?.MAX || 120000;
         const extra = Math.floor(Math.random() * (extraMax - extraMin + 1)) + extraMin;
+        const totalWait = cooldown + extra;
 
-        this.nextMineTime = Date.now() + cooldown + extra;
+        this.nextMineTime = Date.now() + totalWait;
 
-        const waitSec = Math.floor((cooldown + extra) / 1000);
+        const waitSec = Math.floor(totalWait / 1000);
         log.info(`다음 채굴까지: ${Math.floor(waitSec / 60)}분 ${waitSec % 60}초`);
+
+        // 다운로드 시간 할당 (채굴 쿨타임 내에서 60초 후부터 다운로드 시간)
+        this._allocateDownloadTime(totalWait);
 
         // UI 갱신 (채굴 후 즉시 대기시간 표시!)
         this.ui.updateMining(this.stats.mineCount, this.stats.mineReward);
-        this.ui.updateRemaining(cooldown + extra); // 채굴 후 즉시 시간 표시
-        this._updateUI('⏳ 대기 중');
+        this.ui.updateRemaining(totalWait); // 채굴 후 즉시 시간 표시
+        this._updateUI('⏳ 대기 중 (레이드/다운로드 대기)');
+    }
+
+    /**
+     * 다운로드 시간 할당 (채굴 후)
+     * @param {number} totalWaitMs - 전체 대기시간 (밀리초)
+     * @private
+     */
+    _allocateDownloadTime(totalWaitMs) {
+        const now = Date.now();
+
+        // 채굴 후 60초 대기, 그 다음 다운로드 시간대 시작
+        // 다운로드 예상 시간: 3분 (180초)
+        const downloadDelay = 60000; // 60초 후 시작
+        const downloadDuration = CONFIG.TIMING.DOWNLOAD_DURATION || 180000; // 3분
+
+        // 다운로드 시간대 설정
+        this.downloadStartTime = now + downloadDelay;
+        this.downloadEndTime = this.downloadStartTime + downloadDuration;
+        this.isDownloading = false;
+
+        const startSec = Math.floor(downloadDelay / 1000);
+        const durationSec = Math.floor(downloadDuration / 1000);
+        log.info(`다운로드 예정: ${startSec}초 후 시작, ${Math.floor(durationSec / 60)}분 동안`);
+    }
+
+    /**
+     * 다운로드 시간대인지 확인
+     * @private
+     */
+    _isDownloadTime() {
+        const now = Date.now();
+        // 다운로드 시간대이고, 아직 다운로드 안 했으면
+        return now >= this.downloadStartTime &&
+            now < this.downloadEndTime &&
+            !this.isDownloading;
     }
 
     /**
@@ -235,7 +278,7 @@ export class Scheduler {
             log.info(`레이드 완료! +${result.reward} XP`);
             log.raidComplete(result.reward, this.stats.raidReward); // 타임라인
         } else {
-            log.warn('레이드 실패 (살아있는 몰스터 없음 또는 이미 공격)');
+            log.warn('레이드 실패 (살아있는 몬스터 없음 또는 이미 공격)');
         }
 
         // 이 슬롯 기록
@@ -251,24 +294,41 @@ export class Scheduler {
      * @private
      */
     async _doDownload() {
-        this._updateUI('📥 다운로드 중...');
-        log.info('다운로드 작업 시작 (더미)');
+        this.isDownloading = true;
 
-        // TODO: 실제 다운로드 구현
-        // 현재는 3~4분 대기만 (다운로드 시뮬레이션)
-        const downloadTime = CONFIG.TIMING.DOWNLOAD_DURATION || 180000; // 3분
-        const extra = Math.floor(Math.random() * 60000); // +0~1분
+        const downloadDuration = CONFIG.TIMING.DOWNLOAD_DURATION || 180000;
+        const durationSec = Math.floor(downloadDuration / 1000);
 
-        await sleep(downloadTime + extra);
+        this._updateUI(`📥 다운로드 중 (${Math.floor(durationSec / 60)}분)...`);
+        log.info(`다운로드 시작 (더미: ${Math.floor(durationSec / 60)}분 대기)`);
+
+        // 다운로드 시간 동안 상태 업데이트
+        const startTime = Date.now();
+        const endTime = startTime + downloadDuration;
+
+        while (Date.now() < endTime && this.isRunning) {
+            const remaining = endTime - Date.now();
+            const remainMin = Math.floor(remaining / 60000);
+            const remainSec = Math.floor((remaining % 60000) / 1000);
+
+            this._updateUI(`📥 다운로드 중 (남은: ${remainMin}분 ${remainSec}초)`);
+
+            // 채굴 시간이 되면 즉시 중단
+            if (Date.now() >= this.nextMineTime) {
+                log.info('채굴 시간 도래 - 다운로드 중단');
+                break;
+            }
+
+            await sleep(5000); // 5초마다 상태 갱신
+        }
 
         this.stats.downloadCount++;
-        log.info('다운로드 작업 완료 (더미)');
+        log.info(`다운로드 ${this.stats.downloadCount}개 완료 (더미)`);
+        log.downloadComplete(`더미 파일 #${this.stats.downloadCount}`); // 타임라인
 
-        // 다음 다운로드 시간 (채굴 쿨타임 내에서 가능하면 다시)
-        this.nextDownloadTime = Date.now() + 30000; // 30초 후 다시 체크
-
+        this.isDownloading = false;
         this.ui.updateDownload(this.stats.downloadCount);
-        this._updateUI('⏳ 대기 중');
+        this._updateUI('⏳ 대기 중 (휴식)');
     }
 
     /**
@@ -276,9 +336,43 @@ export class Scheduler {
      * @private
      */
     async _doRandomVisit() {
-        this._updateUI('🔀 둘러보기...');
+        this._updateUI('🔀 둘러보기 중...');
         await Human.visitRandomPage(this.page);
         this._updateUI('⏳ 대기 중');
+    }
+
+    /**
+     * 상태 상세 표시
+     * @private
+     */
+    _updateDetailedStatus() {
+        const now = Date.now();
+        const remaining = Math.max(0, this.nextMineTime - now);
+        this.ui.updateRemaining(remaining);
+
+        // 다음 작업 결정
+        let status = '⏳ 대기 중';
+
+        if (remaining > 0) {
+            const min = Math.floor(remaining / 60000);
+            const sec = Math.floor((remaining % 60000) / 1000);
+
+            // 다운로드 시간대 전
+            if (now < this.downloadStartTime) {
+                const dlWait = Math.floor((this.downloadStartTime - now) / 1000);
+                status = `⏳ 휴식 중 (다운로드 ${dlWait}초 후)`;
+            }
+            // 다운로드 시간대 (이미 처리됨)
+            else if (now >= this.downloadStartTime && now < this.downloadEndTime) {
+                status = `📥 다운로드 시간대`;
+            }
+            // 다운로드 후
+            else {
+                status = `⏳ 휴식 중 (채굴 ${min}분 ${sec}초 후)`;
+            }
+        }
+
+        this._updateUI(status);
     }
 
     /**
@@ -312,8 +406,14 @@ export class Scheduler {
      * @private
      */
     _shouldVisitRandomPage() {
-        // 1분에 1번 정도 (5% 확률)
-        const chance = CONFIG.IDLE_BEHAVIOR?.RANDOM_VISIT_CHANCE || 5;
+        // 다운로드 시간대면 랜덤 방문 안 함
+        const now = Date.now();
+        if (now >= this.downloadStartTime && now < this.downloadEndTime) {
+            return false;
+        }
+
+        // 2% 확률
+        const chance = CONFIG.IDLE_BEHAVIOR?.RANDOM_VISIT_CHANCE || 2;
         return Math.random() * 100 < chance;
     }
 
@@ -323,16 +423,6 @@ export class Scheduler {
      */
     _updateUI(status) {
         this.ui.update({ status });
-    }
-
-    /**
-     * UI 남은 시간 업데이트
-     * @private
-     */
-    _updateUIRemaining() {
-        const now = Date.now();
-        const remaining = Math.max(0, this.nextMineTime - now);
-        this.ui.updateRemaining(remaining);
     }
 
     /**
