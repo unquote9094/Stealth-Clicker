@@ -1,12 +1,13 @@
 /**
  * TerminalUI.js
- * 터미널 실시간 모니터링 UI
+ * 터미널 실시간 모니터링 UI (개선 버전)
  * 
- * 1초마다 화면 갱신, 현재 상태 표시
+ * - 다음 작업 표시
+ * - 더 나은 상태 표시
  */
 
 import { CONFIG } from '../config/config.js';
-import Logger from './logger.js';
+import Logger, { SESSION } from './logger.js';
 
 /**
  * 터미널 UI 클래스
@@ -20,8 +21,8 @@ export class TerminalUI {
             mining: { count: 0, reward: 0, target: CONFIG.GOALS.DAILY_MINING_COUNT },
             raid: { count: 0, reward: 0 },
             download: { count: 0, target: CONFIG.GOALS.DAILY_FILES },
-            currentMine: '',
-            waitTime: 0,
+            remaining: 0,       // 다음 채굴까지 남은 시간 (밀리초)
+            nextAction: '',     // 다음 예정 작업
             features: { ...CONFIG.FEATURES },
         };
     }
@@ -40,6 +41,10 @@ export class TerminalUI {
 
         this.intervalId = setInterval(() => {
             if (this.isRunning) {
+                // 남은 시간 자동 감소
+                if (this.state.remaining > 0) {
+                    this.state.remaining = Math.max(0, this.state.remaining - 1000);
+                }
                 this.render();
             }
         }, 1000);
@@ -87,10 +92,17 @@ export class TerminalUI {
     }
 
     /**
-     * 대기 시간 업데이트
+     * 남은 시간 업데이트
      */
-    updateWait(remainingMs) {
-        this.state.waitTime = remainingMs;
+    updateRemaining(remainingMs) {
+        this.state.remaining = remainingMs;
+    }
+
+    /**
+     * 다음 작업 표시 설정
+     */
+    updateNextAction(action) {
+        this.state.nextAction = action;
     }
 
     /**
@@ -100,10 +112,18 @@ export class TerminalUI {
         const s = this.state;
         const time = new Date().toLocaleTimeString('ko-KR');
 
-        // 대기 시간 포맷
-        const waitMin = Math.floor(s.waitTime / 60000);
-        const waitSec = Math.floor((s.waitTime % 60000) / 1000);
-        const waitStr = s.waitTime > 0 ? `${waitMin}분 ${waitSec}초` : '-';
+        // 남은 시간 포맷
+        let waitStr = '-';
+        if (s.remaining > 0) {
+            const waitMin = Math.floor(s.remaining / 60000);
+            const waitSec = Math.floor((s.remaining % 60000) / 1000);
+            waitStr = `${waitMin}분 ${waitSec}초`;
+        } else if (s.status.includes('중...') || s.status.includes('처리')) {
+            waitStr = '작업 중...';
+        }
+
+        // 다음 작업 계산
+        let nextStr = s.nextAction || this._getNextActionStr();
 
         // 기능 상태
         const miningFlag = s.features.MINING ? '✅' : '❌';
@@ -116,23 +136,64 @@ export class TerminalUI {
 
         // 화면 클리어 + 출력
         console.clear();
-        console.log('┌─────────────────────────────────────────────────┐');
-        console.log(`│ 🎮 Stealth-Clicker                    ${time} │`);
-        console.log('├─────────────────────────────────────────────────┤');
-        console.log(`│ 상태: ${this._pad(s.status, 40)} │`);
-        console.log(`│ 광산: ${this._pad(s.currentMine || '-', 40)} │`);
-        console.log(`│ 대기: ${this._pad(waitStr, 40)} │`);
-        console.log('├─────────────────────────────────────────────────┤');
-        console.log(`│ 채굴 ${miningFlag}  ${this._pad(`${s.mining.count}/${s.mining.target}회`, 8)} ${miningBar} ${this._pad(`${s.mining.reward} MP`, 10)} │`);
-        console.log(`│ 레이드 ${raidFlag} ${this._pad(`${s.raid.count}회`, 10)} ${this._pad(`${s.raid.reward} 포인트`, 18)}     │`);
-        console.log(`│ 다운 ${downloadFlag}  ${this._pad(`${s.download.count}/${s.download.target}개`, 12)}                      │`);
-        console.log('└─────────────────────────────────────────────────┘');
+        console.log('┌───────────────────────────────────────────────────────┐');
+        console.log(`│ 🎮 Stealth-Clicker                          ${time} │`);
+        console.log('├───────────────────────────────────────────────────────┤');
+        console.log(`│ 현재: ${this._pad(s.status, 47)} │`);
+        console.log(`│ 대기: ${this._pad(waitStr, 47)} │`);
+        console.log(`│ 다음: ${this._pad(nextStr, 47)} │`);
+        console.log('├───────────────────────────────────────────────────────┤');
+        console.log(`│ ⛏️ 채굴  ${miningFlag} ${this._pad(`${s.mining.count}/${s.mining.target}`, 6)} ${miningBar} ${this._pad(`${s.mining.reward} MP`, 10)} │`);
+        console.log(`│ ⚔️ 레이드 ${raidFlag} ${this._pad(`${s.raid.count}회`, 8)} ${this._pad(`${s.raid.reward} XP`, 12)}              │`);
+        console.log(`│ 📥 다운  ${downloadFlag} ${this._pad(`${s.download.count}/${s.download.target}`, 8)}                           │`);
+        console.log('├───────────────────────────────────────────────────────┤');
+        console.log(`│ 세션: ${this._pad(SESSION.ID, 47)} │`);
+        console.log('└───────────────────────────────────────────────────────┘');
         console.log('  [Ctrl+C] 종료');
     }
 
     /**
+     * 다음 작업 문자열 생성
+     */
+    _getNextActionStr() {
+        const s = this.state;
+        const parts = [];
+
+        // 채굴 시간
+        if (s.features.MINING && s.remaining > 0) {
+            const min = Math.floor(s.remaining / 60000);
+            const sec = Math.floor((s.remaining % 60000) / 1000);
+            parts.push(`⛏️ 채굴 (${min}분 ${sec}초 후)`);
+        } else if (s.features.MINING && s.remaining <= 0) {
+            parts.push('⛏️ 채굴 (준비됨)');
+        }
+
+        // 레이드 시간 체크
+        if (s.features.RAID) {
+            const minutes = new Date().getMinutes();
+            if (minutes >= 10 && minutes < 20) {
+                parts.push('⚔️ 레이드 시간대!');
+            } else if (minutes >= 40 && minutes < 50) {
+                parts.push('⚔️ 레이드 시간대!');
+            } else {
+                // 다음 레이드 시간
+                let nextRaid = '';
+                if (minutes < 10) {
+                    nextRaid = `${10 - minutes}분 후`;
+                } else if (minutes < 40) {
+                    nextRaid = `${40 - minutes}분 후`;
+                } else {
+                    nextRaid = `${70 - minutes}분 후`;
+                }
+                parts.push(`⚔️ 레이드 (${nextRaid})`);
+            }
+        }
+
+        return parts.join(' | ') || '대기 중';
+    }
+
+    /**
      * 진행률 바 생성
-     * @private
      */
     _progressBar(percent, length) {
         const filled = Math.floor((percent / 100) * length);
@@ -142,7 +203,6 @@ export class TerminalUI {
 
     /**
      * 문자열 패딩
-     * @private
      */
     _pad(str, length) {
         const s = String(str);
@@ -152,7 +212,6 @@ export class TerminalUI {
 
     /**
      * 문자열 폭 계산 (한글 = 2)
-     * @private
      */
     _strWidth(str) {
         let width = 0;

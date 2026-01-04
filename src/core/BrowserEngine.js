@@ -210,10 +210,10 @@ export class BrowserEngine {
             const hasCaptcha = await this.page.$(SELECTORS.CAPTCHA);
             if (hasCaptcha) {
                 log.warn('⚠️ 로그인 페이지에 캡차(CAPTCHA)가 있습니다!');
-                log.warn('👉 브라우저에서 직접 로그인해주세요. (30초 대기)');
+                log.warn('👉 브라우저에서 직접 로그인해주세요. (60초 대기)');
 
-                // 30초 동안 수동 로그인 대기
-                for (let i = 30; i > 0; i--) {
+                // 60초 동안 수동 로그인 대기
+                for (let i = 60; i > 0; i--) {
                     // 이미 로그인 되었는지 확인
                     const currentUrl = this.page.url();
                     if (!currentUrl.includes('login')) {

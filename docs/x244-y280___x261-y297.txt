@@ -1,0 +1,267 @@
+[21:23:04] [INFO] [Browser] 브라우저 실행 중...
+[21:23:05] [INFO] [Browser] 뷰포트: 1360x1542
+[21:23:05] [INFO] [Browser] 브라우저 준비 완료
+[21:23:05] [INFO] [Browser] 쿠키 복원 완료
+[21:23:05] [INFO] [Browser] 이동 중: https://newtoki469.com
+[21:23:12] [INFO] [Browser] 페이지 로드 완료 (3.9초 대기)
+[21:23:12] [INFO] [Browser] 이미 로그인 상태
+[21:23:12] [INFO] [Orchestrator] 통합 스케줄러 초기화 중...
+[21:23:12] [INFO] [Mouse] 커서 초기화 완료
+[21:23:12] [INFO] [Mine] 광산 채굴 모듈 초기화 완료
+[21:23:12] [INFO] [Mouse] 커서 초기화 완료
+[21:23:12] [INFO] [Raid] 몬스터 레이드 모듈 초기화 완료
+[21:23:12] [INFO] [Orchestrator] 통합 스케줄러 준비 완료
+[21:23:12] [INFO] [Orchestrator] === 통합 스케줄러 시작 ===
+[21:23:12] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:23:12] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:23:19] [INFO] [Browser] 페이지 로드 완료 (4.1초 대기)
+[21:23:21] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:23:21] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 94.1%)
+[21:23:21] [INFO] [Mine] 광산 이동: 사도 금광
+[21:23:26] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:23:32] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 1회)
+[21:23:32] [INFO] [Mine] 채굴 성공! 순이익: 269 MP (보상 1269 - 사용료 1000, 총 269 MP)
+[21:28:54] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:28:54] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:28:58] [INFO] [Browser] 페이지 로드 완료 (2.2초 대기)
+[21:29:01] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:29:01] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 92.1%)
+[21:29:01] [INFO] [Mine] 광산 이동: 사도 금광
+[21:29:06] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:29:12] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 2회)
+[21:29:13] [INFO] [Mine] 채굴 성공! 순이익: 123 MP (보상 1123 - 사용료 1000, 총 392 MP)
+[21:35:45] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:35:45] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:35:48] [INFO] [Browser] 페이지 로드 완료 (2.1초 대기)
+[21:35:51] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:35:51] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 89.0%)
+[21:35:51] [INFO] [Mine] 광산 이동: 사도 금광
+[21:35:56] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:36:02] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 3회)
+[21:36:02] [INFO] [Mine] 채굴 성공! 순이익: 208 MP (보상 1208 - 사용료 1000, 총 600 MP)
+[21:40:04] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:40:09] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:40:09] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:40:12] [INFO] [Browser] 페이지 로드 완료 (2.4초 대기)
+[21:40:15] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 3회
+[21:40:15] [INFO] [Raid] 레이드 이동: 혼란의 똑똑한 슬라임 레이드											공격 3회
+[21:40:15] [INFO] [Browser] 이동 중: https://newtoki469.com/monster/93230682
+[21:40:19] [INFO] [Browser] 페이지 로드 완료 (2.8초 대기)
+[21:40:27] [INFO] [Raid] 경고창 대기 중...
+[21:40:28] [WARN] [Mine] 경고창 감지: 혼란의 똑똑한 슬라임에게 79의 바람속성 피해를 주었습니다.
+[21:40:28] [WARN] [Raid] 경고창 감지: 혼란의 똑똑한 슬라임에게 79의 바람속성 피해를 주었습니다....
+[21:40:28] [INFO] [Raid] [Alert 감지] 혼란의 똑똑한 슬라임에게 79의 바람속성 피해를 주었습니다....
+[21:40:28] [INFO] [Raid] 경고창 확인 중... (2.1초 대기)
+[21:40:30] [INFO] [Raid] 댓글 로딩 대기... (3.5초)
+[21:40:30] [WARN] [Mine] 경고창 감지: 축하합니다! 7레벨로 레벨업 하였습니다.
+[21:40:30] [WARN] [Raid] 경고창 감지: 축하합니다! 7레벨로 레벨업 하였습니다....
+[21:40:34] [INFO] [Raid] [댓글 파싱] 닉네임: "살려줘요ㅠㅠ", 댓글 9개 발견
+[21:40:34] [INFO] [Raid] [내 댓글] 살려줘요ㅠㅠ (): 90포인트를 소모하여 혼란의 똑똑한 슬라임에게 79의 바람속성 피해를 주었습니다.
+								116포인트...
+[21:40:34] [INFO] [Raid] ★ 포인트 흡수: +116 MP
+[21:40:34] [INFO] [Raid] ★ 공격 성공! +116 MP (총 116 MP)
+[21:40:34] [INFO] [Orchestrator] 레이드 공격 완료! +116 MP
+[21:40:38] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:40:38] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:40:43] [INFO] [Browser] 페이지 로드 완료 (3.2초 대기)
+[21:40:45] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:40:45] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 86.5%)
+[21:40:45] [INFO] [Mine] 광산 이동: 사도 금광
+[21:40:51] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:41:05] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:41:09] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:41:09] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:41:13] [INFO] [Browser] 페이지 로드 완료 (3.1초 대기)
+[21:41:15] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 20회
+[21:41:15] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 20회
+[21:41:20] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:41:20] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:41:23] [INFO] [Browser] 페이지 로드 완료 (2.6초 대기)
+[21:41:26] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:41:26] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 86.1%)
+[21:41:26] [INFO] [Mine] 광산 이동: 사도 금광
+[21:41:31] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:41:39] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:41:39] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:41:45] [INFO] [Browser] 페이지 로드 완료 (4.3초 대기)
+[21:41:47] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:41:47] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 86.1%)
+[21:41:47] [INFO] [Mine] 광산 이동: 사도 금광
+[21:41:52] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:41:58] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 4회)
+[21:41:59] [INFO] [Mine] 채굴 성공! 순이익: 159 MP (보상 1159 - 사용료 1000, 총 759 MP)
+[21:41:59] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:42:02] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:42:02] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:42:06] [INFO] [Browser] 페이지 로드 완료 (2.8초 대기)
+[21:42:08] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 34회
+[21:42:08] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 34회
+[21:42:13] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:42:13] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:42:16] [INFO] [Browser] 페이지 로드 완료 (2.4초 대기)
+[21:42:18] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:42:18] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 85.6%)
+[21:42:18] [INFO] [Mine] 광산 이동: 사도 금광
+[21:42:24] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:42:59] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:43:04] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:43:04] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:43:09] [INFO] [Browser] 페이지 로드 완료 (4.2초 대기)
+[21:43:11] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 54회
+[21:43:11] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 54회
+[21:43:16] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:43:16] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:43:19] [INFO] [Browser] 페이지 로드 완료 (2.1초 대기)
+[21:43:21] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:43:21] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 85.2%)
+[21:43:21] [INFO] [Mine] 광산 이동: 사도 금광
+[21:43:25] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:43:59] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:44:03] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:44:03] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:44:07] [INFO] [Browser] 페이지 로드 완료 (3.3초 대기)
+[21:44:09] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 75회
+[21:44:09] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 75회
+[21:44:13] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:44:13] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:44:17] [INFO] [Browser] 페이지 로드 완료 (3.2초 대기)
+[21:44:20] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:44:20] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 84.7%)
+[21:44:20] [INFO] [Mine] 광산 이동: 사도 금광
+[21:44:24] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:45:00] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:45:03] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:45:03] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:45:07] [INFO] [Browser] 페이지 로드 완료 (2.9초 대기)
+[21:45:09] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 93회
+[21:45:09] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 93회
+[21:45:13] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:45:13] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:45:17] [INFO] [Browser] 페이지 로드 완료 (3.0초 대기)
+[21:45:20] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:45:20] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 84.3%)
+[21:45:20] [INFO] [Mine] 광산 이동: 사도 금광
+[21:45:25] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:46:00] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:46:04] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:46:04] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:46:08] [INFO] [Browser] 페이지 로드 완료 (3.4초 대기)
+[21:46:11] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 113회
+[21:46:11] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 113회
+[21:46:16] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:46:16] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:46:20] [INFO] [Browser] 페이지 로드 완료 (3.3초 대기)
+[21:46:22] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:46:22] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 83.9%)
+[21:46:22] [INFO] [Mine] 광산 이동: 사도 금광
+[21:46:26] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:47:01] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:47:04] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:47:04] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:47:08] [INFO] [Browser] 페이지 로드 완료 (2.4초 대기)
+[21:47:10] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 135회
+[21:47:10] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 135회
+[21:47:14] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:47:14] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:47:18] [INFO] [Browser] 페이지 로드 완료 (3.6초 대기)
+[21:47:21] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:47:21] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 83.4%)
+[21:47:21] [INFO] [Mine] 광산 이동: 사도 금광
+[21:47:26] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:47:27] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:47:27] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:47:33] [INFO] [Browser] 페이지 로드 완료 (4.7초 대기)
+[21:47:35] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:47:35] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 83.4%)
+[21:47:35] [INFO] [Mine] 광산 이동: 사도 금광
+[21:47:39] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:47:45] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 5회)
+[21:47:46] [INFO] [Mine] 채굴 성공! 순이익: 367 MP (보상 1367 - 사용료 1000, 총 1126 MP)
+[21:47:46] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:47:51] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:47:51] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:47:56] [INFO] [Browser] 페이지 로드 완료 (4.3초 대기)
+[21:47:59] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 154회
+[21:47:59] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 154회
+[21:48:03] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:48:03] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:48:06] [INFO] [Browser] 페이지 로드 완료 (2.2초 대기)
+[21:48:09] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:48:09] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 82.9%)
+[21:48:09] [INFO] [Mine] 광산 이동: 사도 금광
+[21:48:16] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:48:47] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:48:51] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:48:51] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:48:56] [INFO] [Browser] 페이지 로드 완료 (4.3초 대기)
+[21:48:59] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 177회
+[21:48:59] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 177회
+[21:49:02] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:49:02] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:49:06] [INFO] [Browser] 페이지 로드 완료 (2.8초 대기)
+[21:49:09] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:49:09] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 82.4%)
+[21:49:09] [INFO] [Mine] 광산 이동: 사도 금광
+[21:49:14] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:49:47] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[21:49:51] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[21:49:51] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[21:49:56] [INFO] [Browser] 페이지 로드 완료 (3.6초 대기)
+[21:49:58] [INFO] [Raid] 살아있는 레이드 발견: 혼란의 똑똑한 슬라임 레이드											공격 201회
+[21:49:58] [INFO] [Raid] 이미 공격한 레이드 (스킵): 혼란의 똑똑한 슬라임 레이드											공격 201회
+[21:50:03] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:50:03] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:50:06] [INFO] [Browser] 페이지 로드 완료 (2.6초 대기)
+[21:50:09] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:50:09] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 81.7%)
+[21:50:09] [INFO] [Mine] 광산 이동: 사도 금광
+[21:50:14] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:54:04] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[21:54:04] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[21:54:10] [INFO] [Browser] 페이지 로드 완료 (4.5초 대기)
+[21:54:12] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[21:54:12] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 79.6%)
+[21:54:12] [INFO] [Mine] 광산 이동: 사도 금광
+[21:54:18] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[21:54:25] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 6회)
+[21:54:25] [INFO] [Mine] 채굴 성공! 순이익: 416 MP (보상 1416 - 사용료 1000, 총 1542 MP)
+[22:00:40] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:00:40] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:00:45] [INFO] [Browser] 페이지 로드 완료 (3.9초 대기)
+[22:00:47] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[22:00:47] [INFO] [Mine] 살아있는 광산 발견: 사도 금광 (진행도: 76.5%)
+[22:00:47] [INFO] [Mine] 광산 이동: 사도 금광
+[22:00:53] [INFO] [Mine] 광산 "사도 금광" 페이지 로드 완료
+[22:00:58] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 7회)
+[22:00:59] [INFO] [Mine] 채굴 성공! 순이익: 416 MP (보상 1416 - 사용료 1000, 총 1958 MP)
+[22:06:23] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:06:23] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:06:29] [INFO] [Browser] 페이지 로드 완료 (4.5초 대기)
+[22:06:31] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:10:33] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[22:10:38] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[22:10:38] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[22:10:38] [ERROR] [Raid] 레이드 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:10:41] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:10:41] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:10:41] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:11:32] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:11:32] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:11:32] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:11:32] [ERROR] [Mine] 광산 검색 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:11:32] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[22:11:32] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[22:11:32] [ERROR] [Raid] 레이드 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:16:32] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:16:32] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:16:32] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:16:32] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[22:16:32] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[22:16:32] [ERROR] [Raid] 레이드 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:21:32] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:21:32] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:21:32] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:26:32] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[22:26:32] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[22:26:32] [ERROR] [Mine] 광산 목록 이동 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.
+[22:26:32] [ERROR] [Mine] 광산 검색 실패: Attempted to use detached Frame '26817C9D7E39A4FA5B33D80C564B7BDD'.

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "cf_clearance",
+    "value": "vAK6nHygY0sPrlqtnoJxBX7W_E.hsQuwTj2fk6cahjo-1767441068-1.2.1.1-45nB4A0mmPvlqIr.LVLD8lnqQDAStjBZWkMUNj7gwHbgnhY5xWqfa9lTx8Y9gCPwxBS2JTmTnkga6W1HBsMiLahSOSY1u5uJM81azfPoXQrPTwxN915APAjE8EC.cVdWrzlSyqieXDyYa4bg_f6WmtlY87hifNOUTdYJtqbrqogAm.jcJfXtoTiYy57s9WjaWuicqwkcwM.1Jqbh0NdXmg6D6DiFdQkSiI3rwj2WiqI",
+    "domain": ".newtoki469.com",
+    "path": "/",
+    "expires": 1798977068.26972,
+    "size": 310,
+    "httpOnly": true,
+    "secure": true,
+    "session": false,
+    "sameSite": "None",
+    "priority": "Medium",
+    "sameParty": false,
+    "sourceScheme": "Secure",
+    "partitionKey": "https://newtoki469.com"
+  },
+  {
+    "name": "PHPSESSID",
+    "value": "ckdq78sc0pfhimkt7tor2463h84i9e8r8ndukj7nq5chr5lv47gsfju77h64l2d8",
+    "domain": ".newtoki469.com",
+    "path": "/",
+    "expires": -1,
+    "size": 73,
+    "httpOnly": false,
+    "secure": true,
+    "session": true,
+    "sameSite": "None",
+    "priority": "Medium",
+    "sameParty": false,
+    "sourceScheme": "Secure"
+  }
+]

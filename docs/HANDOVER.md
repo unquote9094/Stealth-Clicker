@@ -1,198 +1,239 @@
-# 🔄 세션 핸드오버
+# 🔄 세션 핸드오버 문서
 
-> **생성일**: 2026-01-04 01:43 KST
-> **스텝**: 583
-
----
-
-## 📌 다음 AI: 이것만 읽어
-
-1. `.agent/constitution.md` - 핵심 규칙
-2. `docs/ISSUES.md` - 이슈 목록
-3. 아래 "이번 세션 작업" 섹션
+> **작성일**: 2026-01-04 18:34 KST  
+> **세션 스텝**: ~734 (오버)  
+> **프로젝트**: Stealth-Clicker (북토끼 자동 채굴/레이드)
 
 ---
 
-## 🔥 이번 세션 작업 (2026-01-04)
+## 📋 이 세션에서 완료한 작업
 
-### 1. 클라우드플레어 캡차 처리 구현 (가장 중요!)
+### 1. CF(클라우드플레어) 자동통과 타입 감지 복구
 
-**문제**: 랜덤 페이지 방문 시 클라우드플레어 체크박스 캡차가 나타나면 처리 불가
+- **파일**: `src/core/IdleBehavior.js` (197-222줄)
+- **변경**: 체크박스/iframe 있는지 먼저 확인, 없으면 20초 대기만 (클릭 안함)
+- **로그**: `📌 자동 통과 타입 (체크박스 없음) - 20초 대기`
 
-**해결**:
+### 2. Detached Frame 발생 시 대기 종료
 
-- `IdleBehavior.js`에 클라우드플레어 챌린지 페이지 감지 로직 추가
-- **체크박스 감지**: "Verify you are human" 문구로 판별 (iframe 감지는 불안정)
-- **자동 통과 vs 체크박스**: 문구 있으면 체크박스 클릭, 없으면 20초 대기
-- **고정 좌표 클릭**: (270, 310) 위치에서 마우스 천천히 이동 후 클릭
+- **파일**: `src/core/IdleBehavior.js` (436-444줄)
+- **변경**: detached Frame 에러 시 `isActive = false` 후 return → 상위에서 페이지 갱신
 
-**흐름**:
+### 3. 인간처럼 보이기 설정 추가
+
+- **파일**: `src/config/config.js`
+- **변경**:
+  - `TIMING.MINE_EXTRA.MAX`: 100초 → **200초** (대기 300~500초)
+  - `TIMING.RAID_SKIP_CHANCE`: **10%** 확률로 레이드 스킵
+
+### 4. 레이드 스킵 시에도 slot 기록 추가
+
+- **파일**: `src/actions/MonsterRaid.js` (305~325줄)
+- **문제**: 캡차 감지/URL 스킵 시 slot 미기록 → 10~20분간 레이드 페이지 반복 방문
+- **해결**: `_markRaidSlotAttacked()` 호출 추가
+- **효과**: 같은 시간대에 레이드 체크 1회만
+
+### 5. 불필요한 광산 복귀 루틴 제거
+
+- **파일**: `src/core/Orchestrator.js` (274~280줄)
+- **파일**: `src/core/IdleBehavior.js` (425~446줄)
+- **변경**:
+  - 레이드 후 광산 복귀 제거
+  - 랜덤 페이지 방문 후 광산 복귀 제거
+- **효과**: 광산 이동은 **채굴 시점에만** 발생
+
+### 6. 디버그 로그 강화
+
+- **파일**: `src/core/Orchestrator.js`
+- **추가된 로그**:
+  - `=== 메인 루프 시작 ===`
+  - `>>> _tryMining() 시작/종료`
+  - `광산 이동 결과: 성공/실패`
+  - `채굴 버튼 클릭 시도...`
+  - `채굴 결과: success=true, reward=XXX`
+  - `대기 시작: X분 Y초 (N회 채굴 완료)`
+  - `⏰ 대기 완료 - 다음 채굴 시작`
+
+---
+
+## 🏗️ 현재 코드베이스 구조
 
 ```
-페이지 이동 → 클라우드플레어 감지 (제목 "Just a moment...")
-            → 5초 로딩 대기
-            → "Verify you are human" 문구 확인
-              │
-              ├── 있음 → 체크박스 클릭 (270, 310)
-              │         - 3-5초 로딩 대기
-              │         - 30단계 마우스 이동
-              │         - 1-2초 대기 후 클릭
-              │         - 30초 통과 확인
-              │
-              └── 없음 → 자동 통과 대기 (20초)
+src/
+├── core/
+│   ├── Orchestrator.js      # 메인 스케줄러 (채굴 → 대기 → 채굴 루프)
+│   ├── IdleBehavior.js      # 대기 중 행동 (랜덤 페이지, 마우스, 스크롤)
+│   ├── BrowserEngine.js     # Puppeteer 브라우저 관리
+│   └── HumanMouse.js        # 사람처럼 마우스 이동 (ghost-cursor)
+├── actions/
+│   ├── MineGame.js          # 광산 채굴 로직
+│   └── MonsterRaid.js       # 몬스터 레이드 로직
+├── config/
+│   └── config.js            # 모든 설정값
+└── utils/
+    ├── TerminalUI.js        # 터미널 UI 렌더링
+    ├── logger.js            # 로그 파일 저장
+    └── helpers.js           # 유틸 함수
 ```
-
-**수정 파일**: `src/core/IdleBehavior.js`
 
 ---
 
-### 2. 날짜 버그 수정
+## ⚙️ 주요 설정값 (config.js)
 
-**문제**: 로그 파일이 1월 3일로 저장됨 (실제는 1월 4일)
+| 설정 | 값 | 설명 |
+|:---|:---|:---|
+| `TIMING.MINE_COOLDOWN` | 300초 | 채굴 기본 쿨타임 |
+| `TIMING.MINE_EXTRA.MAX` | 200초 | 추가 랜덤 딜레이 (총 300~500초) |
+| `TIMING.RAID_SKIP_CHANCE` | 10% | 레이드 스킵 확률 |
+| `IDLE_BEHAVIOR.CHANCES.PAGE_VISIT` | 25% | 랜덤 페이지 방문 확률 |
+| `IDLE_BEHAVIOR.CHANCES.MOUSE_MOVE` | 30% | 마우스 이동 확률 |
+| `GOALS.DAILY_MINING_COUNT` | 60회 | 하루 채굴 목표 |
 
-**원인**: `new Date().toISOString()`이 **UTC 시간** 반환 (한국시간 -9시간)
+---
 
-**해결**: `src/utils/logger.js`에서 로컬 시간 사용하도록 변경
+## 🐛 알려진 버그/이슈
+
+### 1. UI 대기시간 불일치 (미해결)
+
+- **증상**: 로그에 `대기 시작: 6분 14초`인데 UI에 4분 50초 표시
+- **원인 추정**: TerminalUI의 endTime 계산 또는 갱신 문제
+- **파일**: `src/utils/TerminalUI.js`
+- **우선순위**: 중간
+
+### 2. 페이지 방문 후 현재 위치 불명확
+
+- **증상**: 랜덤 페이지에 머물러 있을 때 레이드 체크가 가능한지 불명확
+- **영향**: 레이드 시간에 체크 못할 수 있음
+- **해결 방안**: 레이드 체크 전에 별도 페이지 이동 없이 시간만 체크하도록 수정 필요
+
+---
+
+## 📝 다음 세션에서 해야 할 작업
+
+### 우선순위 높음
+
+1. **UI 대기시간 버그 수정**
+   - `TerminalUI.js`의 `updateWait()` 함수 확인
+   - endTime 계산 로직 검증
+
+2. **테스트 실행 및 로그 확인**
+
+   ```bash
+   node auto-run.js
+   ```
+
+   - 광산 복귀 로그 없어야 함
+   - 레이드 스킵 후 같은 시간대 재체크 없어야 함
+   - 대기시간 정확하게 흘러야 함
+
+### 우선순위 중간
+
+3. **레이드 체크 로직 개선**
+   - 현재: 1분 chunk 끝날 때마다 체크
+   - 개선: 레이드 시간(10~20분, 40~50분)이 아니면 체크 스킵
+
+2. **인간처럼 보이기 추가 기능**
+   - 새벽 시간(0~7시) 비활성화
+   - 하루 중 랜덤 휴식 시간
+
+### 우선순위 낮음
+
+5. **코드 리팩토링**
+   - IdleBehavior와 Orchestrator의 광산 복귀 로직 완전 제거 확인
+   - page 참조 갱신 로직 개선 (BrowserEngine.getPage() 활용)
+
+---
+
+## 🔧 핵심 함수 설명
+
+### Orchestrator.js
 
 ```javascript
-// 기존 (UTC)
-return new Date().toISOString().split('T')[0];
+// 메인 루프
+start() → while(isRunning) {
+    _tryMining()      // 광산 이동 → 채굴 → 대기
+    or _doAlternativeActions()  // 광산 없을 때
+}
 
-// 수정 (로컬 시간)
-const now = new Date();
-return `${now.getFullYear()}-${month}-${day}`;
+// 채굴 시도
+_tryMining() {
+    autoNavigateToAliveMine()  // 광산 이동
+    mineOnce()                 // 채굴 버튼 클릭
+    _waitWithUIUpdate()        // 대기 (1분 단위로 IdleBehavior.idle() 호출)
+}
+
+// 대기 중 행동
+_waitWithUIUpdate(waitTime) {
+    while (Date.now() < endTime) {
+        idleBehavior.idle(60초)  // 마우스, 스크롤, 페이지 방문
+        if (isRaidTime()) attackOnce()  // 레이드 체크
+    }
+}
 ```
 
----
-
-### 3. 레이드 후 멈춤 버그 수정
-
-**문제**: 레이드 공격 후 스크립트가 죽은 듯 멈춤
-
-**원인**: `sleep(5분)`으로 대기해서 UI 업데이트 없음
-
-**해결**: `_waitWithUIUpdate(5분)`으로 변경 + 광산 복귀 로직 추가
-
-**수정 파일**: `src/core/Orchestrator.js`
-
----
-
-### 4. 브라우저 뷰포트 고정
-
-**문제**: 실행할 때마다 브라우저 크기가 랜덤으로 변경됨
-
-**해결**: `config.js`에 고정 크기 설정 추가 (1360x1542)
+### MonsterRaid.js
 
 ```javascript
-BROWSER: {
-    WIDTH: 1360,
-    HEIGHT: 1542,
-},
+// 레이드 시간 체크
+isRaidTime() {
+    // 분이 10~19 또는 40~49면 true
+    // 단, lastAttackedRaidSlot이 현재 slot이면 false (이미 공격함)
+}
+
+// 레이드 공격
+attackOnce() {
+    findActiveRaid()           // 살아있는 레이드 찾기
+    // URL 또는 캡차로 이미 공격 확인 → _markRaidSlotAttacked() 호출
+    // 공격 버튼 클릭 → 보상 파싱
+}
 ```
 
----
-
-### 5. 's' 키 페이지 저장 기능
-
-**추가**: 터미널에서 `s` 키 누르면 현재 페이지 HTML + 스크린샷 저장
-
-**저장 위치**: `./data/page_YYYY-MM-DDTHH-MM-SS.html`, `.png`
-
-**수정 파일**: `auto-run.js`
-
----
-
-### 6. 정상 페이지에서 불필요한 대기 제거
-
-**문제**: 클라우드플레어 아닌 페이지에서도 20초 대기
-
-**해결**: 클라우드플레어 아니면 대기 없이 바로 진행
-
----
-
-## 📂 수정된 파일
-
-| 파일 | 변경 내용 |
-|:---|:---|
-| `src/core/IdleBehavior.js` | 클라우드플레어 캡차 처리, 페이지 방문 시 캡차 체크 |
-| `src/core/Orchestrator.js` | 레이드 후 대기를 `_waitWithUIUpdate`로 변경 |
-| `src/core/BrowserEngine.js` | 뷰포트 고정 크기 사용 |
-| `src/utils/logger.js` | 로컬 시간 사용 |
-| `src/config/config.js` | `BROWSER.WIDTH/HEIGHT` 추가 |
-| `auto-run.js` | 's' 키 페이지 저장 기능 |
-
----
-
-## 📜 최근 커밋
-
-```
-92202fd fix: 체크박스 감지를 iframe에서 'Verify you are human' 문구로 변경 + 5초 로딩 대기
-9dca82b fix: 자동 통과 대기 10초→20초
-1b458cd feat: 체크박스 iframe 존재 시에만 클릭, 없으면 자동 통과 대기
-e1a4a97 fix: 캡차 클릭 사람처럼 천천히 (로딩3-5초, 이동30단계, 대기1-3초)
-64a9972 fix: 정상 페이지에서 불필요한 20초 대기 제거
-55559ec feat: 클라우드플레어 체크박스 고정 좌표 클릭 (270, 310)
-208bfa8 fix: 로그 날짜를 UTC에서 로컬시간(한국시간)으로 변경
-f628b33 fix: 레이드 후 멈춤 버그 - UI 갱신 포함 대기 + 광산 복귀 추가
-77b4a20 feat: 랜덤 페이지 방문 시 클라우드플레어 캡차 처리 추가
-ab737a0 fix: 중복 url 변수 제거 + 자동 페이지 저장 제거
-```
-
----
-
-## ⚠️ 테스트 필요 사항
-
-1. **클라우드플레어 체크박스 클릭 성공 여부**
-   - "Verify you are human" 감지 확인
-   - 고정 좌표 (270, 310) 클릭이 정확한지
-   - 클릭 후 캡차 통과 확인
-
-2. **자동 통과 타입 처리**
-   - 체크박스 없는 클라우드플레어 페이지에서 20초 대기 후 자동 통과
-
-3. **날짜 버그 확인**
-   - 로그가 올바른 날짜로 저장되는지 (`logs/2026-01-04.log`)
-
----
-
-## 🔧 config.js 주요 설정
+### IdleBehavior.js
 
 ```javascript
-IDLE_BEHAVIOR: {
-    CHANCES: { MOUSE_MOVE: 50, SCROLL: 25, PAGE_VISIT: 15, REST: 10 },
-    REFRESH_AFTER_MS: 120000,  // 새로고침 비활성화됨 (REFRESH_ENABLED 없음)
-    CF_WAIT_MS: 20000,         // 자동 통과 대기 시간
-},
+// 대기 중 행동
+idle(duration) {
+    while (isActive && elapsed < duration) {
+        랜덤 선택: 마우스 이동 / 스크롤 / 페이지 방문 / 휴식
+    }
+}
 
-IDLE_BROWSING: {
-    ENABLED: true,
-    PAGES: ['/webtoon', '/comic', '/novel', '/humor', '/toki_free'],
-    STAY_TIME: { MIN: 10000, MAX: 60000 },
-    MAX_VISITS: 10,
-},
-
-BROWSER: {
-    WIDTH: 1360,
-    HEIGHT: 1542,
-},
+// 랜덤 페이지 방문 (수정됨!)
+_visitRandomPage() {
+    page.goto(randomPage)
+    sleep(stayTime)
+    // 광산 복귀 제거됨! - 그냥 대기 상태로 남음
+}
 ```
 
 ---
 
-## 🐛 알려진 이슈
+## 📂 로그 파일 위치
 
-1. **클라우드플레어 체크박스 클릭 불안정**
-   - 고정 좌표가 항상 정확하지 않을 수 있음
-   - 실패 시 `s` 키로 스크린샷 저장 후 좌표 조정 필요
-
-2. **새로고침 기능 비활성화됨**
-   - 새로고침 시 클라우드플레어 캡차가 나타나서 `REFRESH_ENABLED` 기본 OFF
+- 로그: `docs/YYYY-MM-DD.log`
+- 쿠키: `data/cookies.json`
+- 설정: `src/config/config.js`
 
 ---
 
-## 📋 다음 작업 추천
+## 🧪 테스트 체크리스트
 
-1. [ ] 클라우드플레어 체크박스 클릭 테스트
-2. [ ] 체크박스 좌표 조정 (필요시)
-3. [ ] 장시간 실행 안정성 테스트
-4. [ ] `detached Frame` 에러 모니터링
+- [ ] `node auto-run.js` 실행
+- [ ] 채굴 성공 확인 (1회 이상)
+- [ ] 레이드 시간에 레이드 체크 확인
+- [ ] 레이드 스킵 후 재체크 안함 확인
+- [ ] 광산 복귀 로그 없음 확인
+- [ ] UI 대기시간 정확성 확인
+
+---
+
+## 💬 사용자 메모
+
+- 사용자는 C/Linux 백그라운드, 20년 갭 후 복귀
+- npm, git 등 기본 설명 필요
+- 항상 한국어로 응답 (코드 주석 포함)
+- 작업 완료 후 다음 작업 제안 금지 (IDLE_MODE)
+
+---
+
+> **다음 세션 시작 시**: 이 문서를 읽고 `node auto-run.js`로 테스트 먼저 실행하세요!

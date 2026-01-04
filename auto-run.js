@@ -1,6 +1,6 @@
 /**
  * auto-run.js
- * 통합 자동화 스크립트 (광산 + 레이드)
+ * 통합 자동화 스크립트 (광산 + 레이드 + 다운로드)
  * 
  * 사용법: node auto-run.js
  * 
@@ -10,7 +10,7 @@
  */
 
 import { BrowserEngine } from './src/core/BrowserEngine.js';
-import { Orchestrator } from './src/core/Orchestrator.js';
+import { Scheduler } from './src/core/Scheduler.js';
 import { CONFIG } from './src/config/config.js';
 import Logger from './src/utils/logger.js';
 import fs from 'fs';
@@ -18,6 +18,7 @@ import readline from 'readline';
 
 // 전역 변수 (키 입력에서 접근용)
 let globalEngine = null;
+let globalScheduler = null;
 
 async function main() {
     // 터미널 UI 사용 시 Logger 콘솔 출력 끄기 (시작 전에!)
@@ -26,8 +27,7 @@ async function main() {
     }
 
     const engine = new BrowserEngine();
-    globalEngine = engine;  // 키 입력에서 접근 가능하게
-    let orchestrator = null;
+    globalEngine = engine;
 
     try {
         // 터미널 UI 모드 아닐 때만 메시지 출력
@@ -39,7 +39,7 @@ async function main() {
         await engine.launch();
 
         // 2. 쿠키 복원 또는 자동 로그인
-        const cookiesLoaded = await engine.loadCookies();
+        await engine.loadCookies();
 
         // 3. 뉴토끼 접속
         if (!CONFIG.DEBUG.TERMINAL_UI) {
@@ -55,24 +55,22 @@ async function main() {
             return;
         }
 
-        // 4. Orchestrator 초기화
-        orchestrator = new Orchestrator(engine);
-        await orchestrator.init();
+        // 5. Scheduler 초기화 (기존 Orchestrator 대체)
+        globalScheduler = new Scheduler(engine);
+        await globalScheduler.init();
 
-        // 5. 메인 루프 시작 (UI 모드 아닐 때만 메시지)
+        // 6. 메인 루프 시작
         if (!CONFIG.DEBUG.TERMINAL_UI) {
             console.log('\n⛏️ 자동화 시작! (Ctrl+C로 종료)\n');
             console.log('━'.repeat(50));
         }
 
-        await orchestrator.start({
-            dailyMiningGoal: 60, // 하루 60회 목표
-        });
+        await globalScheduler.run();
 
     } catch (error) {
         console.error('❌ 에러:', error.message);
     } finally {
-        if (orchestrator) orchestrator.stop();
+        if (globalScheduler) globalScheduler.stop();
         await engine.close();
     }
 }
@@ -148,4 +146,3 @@ process.on('SIGINT', async () => {
 });
 
 main();
-

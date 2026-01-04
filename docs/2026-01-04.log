@@ -1,0 +1,743 @@
+[
+[08:37:14] [INFO] [Browser] 브라우저 실행 중...
+[08:37:15] [INFO] [Browser] 뷰포트: 1360x1542
+[08:37:15] [DEBUG] [Browser] User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0
+[08:37:15] [INFO] [Browser] 브라우저 준비 완료
+[08:37:15] [INFO] [Browser] 쿠키 복원 완료
+[08:37:15] [INFO] [Browser] 이동 중: https://newtoki469.com
+[08:37:21] [INFO] [Browser] 페이지 로드 완료 (3.2초 대기)
+[08:37:21] [INFO] [Browser] 이미 로그인 상태
+[08:37:21] [INFO] [Orchestrator] 통합 스케줄러 초기화 중...
+[08:37:21] [INFO] [Mouse] 커서 초기화 완료
+[08:37:21] [DEBUG] [Mine] Alert 핸들러 등록 완료
+[08:37:21] [INFO] [Mine] 광산 채굴 모듈 초기화 완료
+[08:37:21] [INFO] [Mouse] 커서 초기화 완료
+[08:37:21] [DEBUG] [Raid] Alert 핸들러 등록 완료
+[08:37:21] [INFO] [Raid] 몬스터 레이드 모듈 초기화 완료
+[08:37:21] [INFO] [Orchestrator] 통합 스케줄러 준비 완료
+[08:37:21] [INFO] [Orchestrator] === 통합 스케줄러 시작 ===
+[08:37:21] [DEBUG] [Orchestrator] === 메인 루프 시작 ===
+[08:37:21] [DEBUG] [Orchestrator] 채굴 모드 ON - _tryMining() 호출
+[08:37:21] [DEBUG] [Orchestrator] >>> _tryMining() 시작
+[08:37:21] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:37:21] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:37:25] [INFO] [Browser] 페이지 로드 완료 (2.6초 대기)
+[08:37:28] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:37:28] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:37:28] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:37:28] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:37:28] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:37:28] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 65.2%)
+[08:37:28] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:37:29] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (555, 645)
+[08:37:32] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:37:32] [DEBUG] [Orchestrator] 광산 이동 결과: 성공
+[08:37:32] [DEBUG] [Orchestrator] 채굴 버튼 클릭 시도...
+[08:37:32] [DEBUG] [Mine] 장비 이미 선택됨: BAGGER288
+[08:37:33] [DEBUG] [Mine] 현재 마지막 댓글 ID: c_207658446
+[08:37:35] [DEBUG] [Mouse] 클릭: button.raid_mining#btn_submit (1082, 929)
+[08:37:39] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 1회)
+[08:37:40] [DEBUG] [Mine] 새 댓글 감지: c_207659758 (이전: c_207658446)
+[08:37:40] [DEBUG] [Mine] 최근 채굴 기록: 포토시에서 배거288 채굴 성공 (채굴 보상 : 1410)
+[08:37:40] [INFO] [Mine] 채굴 성공! 순이익: 410 MP (보상 1410 - 사용료 1000, 총 410 MP)
+[08:37:40] [DEBUG] [Orchestrator] 채굴 결과: success=true, reward=410
+[08:37:40] [INFO] [Orchestrator] 대기 시작: 7분 9초 (1회 채굴 완료)
+[08:37:40] [DEBUG] [Idle] 대기 시작: 60초
+[08:37:40] [DEBUG] [Mouse] 스크롤: -285px
+[08:37:40] [DEBUG] [Idle] 스크롤: -285px
+[08:37:41] [DEBUG] [Mouse] 스크롤: 48px
+[08:37:41] [DEBUG] [Idle] 스크롤: 48px
+[08:37:43] [DEBUG] [Idle] 마우스 이동: (202, 1131)
+[08:37:44] [DEBUG] [Mouse] 스크롤: 228px
+[08:37:44] [DEBUG] [Idle] 스크롤: 228px
+[08:37:45] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[08:37:48] [INFO] [Idle] [CF감지] 제목으로 감지: "Just a moment..."
+[08:37:48] [INFO] [Idle] ⚠️ 클라우드플레어 챌린지 페이지 감지!
+[08:37:48] [INFO] [Idle] ⏳ 페이지 로딩 대기 중... (9.3초)
+[08:37:57] [INFO] [Idle] 📌 자동 통과 타입 (체크박스 없음) - 20초 대기
+[08:38:17] [DEBUG] [Idle] 페이지 체류: 30.2 초
+[08:38:32] [DEBUG] [Mouse] 스크롤: -253px
+[08:38:32] [DEBUG] [Idle] 스크롤: -253px
+[08:38:47] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:38:51] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:38:54] [DEBUG] [Idle] 대기 종료
+[08:38:54] [DEBUG] [Idle] 대기 시작: 60초
+[08:38:54] [DEBUG] [Idle] 마우스 이동: (240, 1407)
+[08:38:57] [DEBUG] [Idle] 마우스 이동: (1137, 1054)
+[08:38:58] [DEBUG] [Idle] 마우스 이동: (1040, 177)
+[08:38:59] [DEBUG] [Mouse] 스크롤: 9px
+[08:38:59] [DEBUG] [Idle] 스크롤: 9px
+[08:39:02] [DEBUG] [Idle] 마우스 이동: (1002, 1318)
+[08:39:03] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:39:06] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:39:06] [DEBUG] [Idle] 페이지 체류: 53.6 초
+[08:39:33] [DEBUG] [Mouse] 스크롤: 300px
+[08:39:33] [DEBUG] [Idle] 스크롤: 300px
+[08:40:00] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:40:03] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:40:05] [DEBUG] [Idle] 대기 종료
+[08:40:05] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:40:09] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:40:09] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:40:15] [INFO] [Browser] 페이지 로드 완료 (3.7초 대기)
+[08:40:18] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:40:18] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:40:18] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:40:18] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:40:18] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 356회
+[08:40:18] [INFO] [Raid] 레이드 이동: 암흑의 허약한 터미네이터 레이드											공격 356회
+[08:40:18] [INFO] [Browser] 이동 중: https://newtoki469.com/monster/93261046
+[08:40:24] [INFO] [Browser] 페이지 로드 완료 (4.7초 대기)
+[08:40:27] [WARN] [Raid] 캡차 감지됨 - 이미 공격한 레이드 (스킵)
+[08:40:30] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:40:30] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:40:34] [INFO] [Browser] 페이지 로드 완료 (2.4초 대기)
+[08:40:36] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:40:36] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:40:36] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:40:36] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:40:36] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:40:36] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.9%)
+[08:40:36] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:40:37] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (539, 636)
+[08:40:41] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:40:41] [DEBUG] [Idle] 대기 시작: 60초
+[08:40:41] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:40:45] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:40:45] [DEBUG] [Idle] 페이지 체류: 47.9 초
+[08:41:09] [DEBUG] [Mouse] 스크롤: 18px
+[08:41:09] [DEBUG] [Idle] 스크롤: 18px
+[08:41:33] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:41:36] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:41:41] [DEBUG] [Idle] 대기 종료
+[08:41:41] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:41:46] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:41:46] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:41:52] [INFO] [Browser] 페이지 로드 완료 (4.0초 대기)
+[08:41:54] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:41:54] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:41:54] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:41:54] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:41:54] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 386회
+[08:41:54] [INFO] [Raid] 이미 공격한 레이드 (스킵): 암흑의 허약한 터미네이터 레이드											공격 386회
+[08:41:59] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:41:59] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:42:03] [INFO] [Browser] 페이지 로드 완료 (3.2초 대기)
+[08:42:06] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:42:06] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:42:06] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:42:06] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:42:06] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:42:06] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.8%)
+[08:42:06] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:42:07] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (539, 634)
+[08:42:12] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:42:12] [DEBUG] [Idle] 대기 시작: 60초
+[08:42:12] [DEBUG] [Mouse] 스크롤: -170px
+[08:42:12] [DEBUG] [Idle] 스크롤: -170px
+[08:42:15] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[08:42:18] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:42:18] [DEBUG] [Idle] 페이지 체류: 53.8 초
+[08:42:45] [DEBUG] [Mouse] 스크롤: -107px
+[08:42:45] [DEBUG] [Idle] 스크롤: -107px
+[08:43:12] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:43:15] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:43:18] [DEBUG] [Idle] 대기 종료
+[08:43:18] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:43:22] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:43:22] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:43:28] [INFO] [Browser] 페이지 로드 완료 (4.8초 대기)
+[08:43:30] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:43:30] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:43:30] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:43:30] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:43:30] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 420회
+[08:43:30] [INFO] [Raid] 이미 공격한 레이드 (스킵): 암흑의 허약한 터미네이터 레이드											공격 420회
+[08:43:35] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:43:35] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:43:39] [INFO] [Browser] 페이지 로드 완료 (3.0초 대기)
+[08:43:41] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:43:41] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:43:41] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:43:41] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:43:41] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:43:41] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.6%)
+[08:43:41] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:43:42] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (552, 850)
+[08:43:47] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:43:47] [DEBUG] [Idle] 대기 시작: 60초
+[08:43:47] [DEBUG] [Mouse] 스크롤: -260px
+[08:43:47] [DEBUG] [Idle] 스크롤: -260px
+[08:43:49] [DEBUG] [Idle] 마우스 이동: (717, 1208)
+[08:43:51] [DEBUG] [Idle] 마우스 이동: (662, 320)
+[08:43:54] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[08:43:56] [INFO] [Idle] [CF감지] 제목으로 감지: "Just a moment..."
+[08:43:56] [INFO] [Idle] ⚠️ 클라우드플레어 챌린지 페이지 감지!
+[08:43:56] [INFO] [Idle] ⏳ 페이지 로딩 대기 중... (9.5초)
+[08:44:06] [INFO] [Idle] 📌 자동 통과 타입 (체크박스 없음) - 20초 대기
+[08:44:26] [DEBUG] [Idle] 페이지 체류: 14.0 초
+[08:44:33] [DEBUG] [Mouse] 스크롤: -43px
+[08:44:33] [DEBUG] [Idle] 스크롤: -43px
+[08:44:40] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:44:42] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:44:47] [DEBUG] [Idle] 대기 종료
+[08:44:47] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:44:52] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:44:52] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:44:55] [INFO] [Browser] 페이지 로드 완료 (2.4초 대기)
+[08:44:58] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:44:58] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:44:58] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:44:58] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:44:58] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 440회
+[08:44:58] [INFO] [Raid] 이미 공격한 레이드 (스킵): 암흑의 허약한 터미네이터 레이드											공격 440회
+[08:45:03] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:45:03] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:45:07] [INFO] [Browser] 페이지 로드 완료 (3.8초 대기)
+[08:45:10] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:45:10] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:45:10] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:45:10] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:45:10] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:45:10] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.4%)
+[08:45:10] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:45:11] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (546, 851)
+[08:45:15] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:45:15] [INFO] [Orchestrator] ⏰ 대기 완료 - 다음 채굴 시작
+[08:45:15] [DEBUG] [Orchestrator] >>> _tryMining() 종료
+[08:45:15] [DEBUG] [Orchestrator] _tryMining() 반환: true
+[08:45:15] [DEBUG] [Orchestrator] === 메인 루프 시작 ===
+[08:45:15] [DEBUG] [Orchestrator] 채굴 모드 ON - _tryMining() 호출
+[08:45:15] [DEBUG] [Orchestrator] >>> _tryMining() 시작
+[08:45:15] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:45:15] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:45:19] [INFO] [Browser] 페이지 로드 완료 (2.8초 대기)
+[08:45:21] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:45:21] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:45:21] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:45:21] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:45:21] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:45:21] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.4%)
+[08:45:21] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:45:23] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (556, 852)
+[08:45:26] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:45:26] [DEBUG] [Orchestrator] 광산 이동 결과: 성공
+[08:45:26] [DEBUG] [Orchestrator] 채굴 버튼 클릭 시도...
+[08:45:27] [DEBUG] [Mine] 장비 이미 선택됨: BAGGER288
+[08:45:27] [DEBUG] [Mine] 현재 마지막 댓글 ID: c_207659758
+[08:45:28] [DEBUG] [Mouse] 클릭: button.raid_mining#btn_submit (1088, 1132)
+[08:45:32] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 2회)
+[08:45:33] [DEBUG] [Mine] 새 댓글 감지: c_207660322 (이전: c_207659758)
+[08:45:33] [DEBUG] [Mine] 최근 채굴 기록: 포토시에서 배거288 채굴 성공 (채굴 보상 : 1252)
+[08:45:33] [INFO] [Mine] 채굴 성공! 순이익: 252 MP (보상 1252 - 사용료 1000, 총 662 MP)
+[08:45:33] [DEBUG] [Orchestrator] 채굴 결과: success=true, reward=252
+[08:45:33] [INFO] [Orchestrator] 대기 시작: 7분 1초 (2회 채굴 완료)
+[08:45:33] [DEBUG] [Idle] 대기 시작: 60초
+[08:45:34] [DEBUG] [Idle] 마우스 이동: (912, 607)
+[08:45:36] [DEBUG] [Idle] 마우스 이동: (1093, 1392)
+[08:45:38] [DEBUG] [Idle] 마우스 이동: (1161, 802)
+[08:45:39] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[08:45:41] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:45:41] [DEBUG] [Idle] 페이지 체류: 47.0 초
+[08:46:05] [DEBUG] [Mouse] 스크롤: -178px
+[08:46:05] [DEBUG] [Idle] 스크롤: -178px
+[08:46:29] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:46:31] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:46:34] [DEBUG] [Idle] 대기 종료
+[08:46:34] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:46:38] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:46:38] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:46:41] [INFO] [Browser] 페이지 로드 완료 (2.5초 대기)
+[08:46:43] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:46:43] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:46:43] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:46:43] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:46:43] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 471회
+[08:46:43] [INFO] [Raid] 이미 공격한 레이드 (스킵): 암흑의 허약한 터미네이터 레이드											공격 471회
+[08:46:46] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:46:46] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:46:51] [INFO] [Browser] 페이지 로드 완료 (4.0초 대기)
+[08:46:54] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:46:54] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:46:54] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:46:54] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:46:54] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:46:54] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.2%)
+[08:46:54] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:46:56] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (554, 848)
+[08:47:00] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:47:00] [DEBUG] [Idle] 대기 시작: 60초
+[08:47:00] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[08:47:02] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:47:02] [DEBUG] [Idle] 페이지 체류: 31.2 초
+[08:47:18] [DEBUG] [Mouse] 스크롤: 5px
+[08:47:18] [DEBUG] [Idle] 스크롤: 5px
+[08:47:34] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:47:36] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:47:38] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[08:47:41] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:47:41] [DEBUG] [Idle] 페이지 체류: 56.9 초
+[08:48:09] [DEBUG] [Mouse] 스크롤: 131px
+[08:48:09] [DEBUG] [Idle] 스크롤: 131px
+[08:48:38] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:48:40] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:48:42] [DEBUG] [Idle] 대기 종료
+[08:48:42] [INFO] [Orchestrator] 대기 중 레이드 시간 감지 - 공격 시도
+[08:48:47] [INFO] [Raid] 레이드 목록 페이지 이동: https://newtoki469.com/monster
+[08:48:47] [INFO] [Browser] 이동 중: https://newtoki469.com/monster
+[08:48:52] [INFO] [Browser] 페이지 로드 완료 (4.4초 대기)
+[08:48:54] [DEBUG] [Raid] 레이드 목록: 총 10개
+[08:48:54] [DEBUG] [Raid]   [0] 암흑의 허약한 터미네이터 레이드			 | isAlive: true | endDate: ""
+[08:48:54] [DEBUG] [Raid]   [1] 혼란의 허약한 드래곤 레이드					 | isAlive: false | endDate: "2026-01-04 08:05:56"
+[08:48:54] [DEBUG] [Raid]   [2] 봉인의 허약한 슬라임 레이드					 | isAlive: false | endDate: "2026-01-04 06:54:47"
+[08:48:54] [INFO] [Raid] 살아있는 레이드 발견: 암흑의 허약한 터미네이터 레이드											공격 501회
+[08:48:54] [INFO] [Raid] 이미 공격한 레이드 (스킵): 암흑의 허약한 터미네이터 레이드											공격 501회
+[08:48:59] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:48:59] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:49:03] [INFO] [Browser] 페이지 로드 완료 (3.1초 대기)
+[08:49:05] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:49:05] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:49:05] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:49:05] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:49:05] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:49:05] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 64.1%)
+[08:49:05] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:49:06] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (546, 852)
+[08:49:10] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:49:10] [DEBUG] [Idle] 대기 시작: 60초
+[08:49:11] [DEBUG] [Idle] 마우스 이동: (276, 178)
+[08:49:13] [DEBUG] [Mouse] 스크롤: -52px
+[08:49:13] [DEBUG] [Idle] 스크롤: -52px
+[08:49:14] [DEBUG] [Mouse] 스크롤: 115px
+[08:49:14] [DEBUG] [Idle] 스크롤: 115px
+[08:49:15] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[08:49:17] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:49:17] [DEBUG] [Idle] 페이지 체류: 34.0 초
+[08:49:34] [DEBUG] [Mouse] 스크롤: 61px
+[08:49:34] [DEBUG] [Idle] 스크롤: 61px
+[08:49:51] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:49:53] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:49:56] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[08:49:58] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:49:58] [DEBUG] [Idle] 페이지 체류: 13.1 초
+[08:50:05] [DEBUG] [Mouse] 스크롤: -295px
+[08:50:05] [DEBUG] [Idle] 스크롤: -295px
+[08:50:11] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:50:14] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:50:16] [DEBUG] [Idle] 대기 종료
+[08:50:16] [DEBUG] [Idle] 대기 시작: 60초
+[08:50:16] [DEBUG] [Mouse] 스크롤: -99px
+[08:50:16] [DEBUG] [Idle] 스크롤: -99px
+[08:50:17] [DEBUG] [Mouse] 스크롤: 8px
+[08:50:17] [DEBUG] [Idle] 스크롤: 8px
+[08:50:18] [DEBUG] [Mouse] 스크롤: 86px
+[08:50:18] [DEBUG] [Idle] 스크롤: 86px
+[08:50:20] [DEBUG] [Idle] 마우스 이동: (759, 1201)
+[08:50:22] [DEBUG] [Idle] 마우스 이동: (965, 866)
+[08:50:24] [DEBUG] [Idle] 마우스 이동: (743, 1359)
+[08:50:25] [DEBUG] [Mouse] 스크롤: -68px
+[08:50:25] [DEBUG] [Idle] 스크롤: -68px
+[08:50:27] [DEBUG] [Idle] 마우스 이동: (431, 1140)
+[08:50:28] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:50:30] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:50:30] [DEBUG] [Idle] 페이지 체류: 46.7 초
+[08:50:54] [DEBUG] [Mouse] 스크롤: -118px
+[08:50:54] [DEBUG] [Idle] 스크롤: -118px
+[08:51:17] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:51:19] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:51:22] [DEBUG] [Idle] 대기 종료
+[08:51:22] [DEBUG] [Idle] 대기 시작: 60초
+[08:51:23] [DEBUG] [Idle] 마우스 이동: (1179, 667)
+[08:51:24] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[08:51:26] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:51:26] [DEBUG] [Idle] 페이지 체류: 20.3 초
+[08:51:37] [DEBUG] [Mouse] 스크롤: -73px
+[08:51:37] [DEBUG] [Idle] 스크롤: -73px
+[08:51:47] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:51:49] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:51:52] [DEBUG] [Idle] 마우스 이동: (1171, 171)
+[08:51:53] [DEBUG] [Mouse] 스크롤: 112px
+[08:51:53] [DEBUG] [Idle] 스크롤: 112px
+[08:51:54] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[08:51:57] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:51:57] [DEBUG] [Idle] 페이지 체류: 36.6 초
+[08:52:15] [DEBUG] [Mouse] 스크롤: -134px
+[08:52:15] [DEBUG] [Idle] 스크롤: -134px
+[08:52:34] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:52:36] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:52:38] [DEBUG] [Idle] 대기 종료
+[08:52:38] [INFO] [Orchestrator] ⏰ 대기 완료 - 다음 채굴 시작
+[08:52:38] [DEBUG] [Orchestrator] >>> _tryMining() 종료
+[08:52:38] [DEBUG] [Orchestrator] _tryMining() 반환: true
+[08:52:38] [DEBUG] [Orchestrator] === 메인 루프 시작 ===
+[08:52:38] [DEBUG] [Orchestrator] 채굴 모드 ON - _tryMining() 호출
+[08:52:38] [DEBUG] [Orchestrator] >>> _tryMining() 시작
+[08:52:38] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:52:38] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:52:42] [INFO] [Browser] 페이지 로드 완료 (3.2초 대기)
+[08:52:45] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:52:45] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:52:45] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:52:45] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:52:45] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:52:45] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 63.6%)
+[08:52:45] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:52:47] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (554, 854)
+[08:52:52] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:52:52] [DEBUG] [Orchestrator] 광산 이동 결과: 성공
+[08:52:52] [DEBUG] [Orchestrator] 채굴 버튼 클릭 시도...
+[08:52:52] [DEBUG] [Mine] 장비 이미 선택됨: BAGGER288
+[08:52:52] [DEBUG] [Mine] 현재 마지막 댓글 ID: c_207660322
+[08:52:54] [DEBUG] [Mouse] 클릭: button.raid_mining#btn_submit (1077, 1151)
+[08:52:58] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 3회)
+[08:52:59] [DEBUG] [Mine] 새 댓글 감지: c_207660854 (이전: c_207660322)
+[08:52:59] [DEBUG] [Mine] 최근 채굴 기록: 포토시에서 배거288 채굴 성공 (채굴 보상 : 1094)
+[08:52:59] [INFO] [Mine] 채굴 성공! 순이익: 94 MP (보상 1094 - 사용료 1000, 총 756 MP)
+[08:52:59] [DEBUG] [Orchestrator] 채굴 결과: success=true, reward=94
+[08:52:59] [INFO] [Orchestrator] 대기 시작: 5분 52초 (3회 채굴 완료)
+[08:52:59] [DEBUG] [Idle] 대기 시작: 60초
+[08:52:59] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:53:01] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:53:01] [DEBUG] [Idle] 페이지 체류: 15.1 초
+[08:53:09] [DEBUG] [Mouse] 스크롤: 92px
+[08:53:09] [DEBUG] [Idle] 스크롤: 92px
+[08:53:17] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:53:19] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:53:23] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[08:53:25] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:53:25] [DEBUG] [Idle] 페이지 체류: 16.5 초
+[08:53:33] [DEBUG] [Mouse] 스크롤: 31px
+[08:53:33] [DEBUG] [Idle] 스크롤: 31px
+[08:53:42] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:53:44] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:53:47] [DEBUG] [Mouse] 스크롤: 233px
+[08:53:47] [DEBUG] [Idle] 스크롤: 233px
+[08:53:48] [DEBUG] [Mouse] 스크롤: -267px
+[08:53:48] [DEBUG] [Idle] 스크롤: -267px
+[08:53:49] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:53:52] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:53:52] [DEBUG] [Idle] 페이지 체류: 27.0 초
+[08:54:06] [DEBUG] [Mouse] 스크롤: -280px
+[08:54:06] [DEBUG] [Idle] 스크롤: -280px
+[08:54:19] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:54:22] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:54:24] [DEBUG] [Idle] 대기 종료
+[08:54:24] [DEBUG] [Idle] 대기 시작: 60초
+[08:54:24] [DEBUG] [Mouse] 스크롤: 258px
+[08:54:24] [DEBUG] [Idle] 스크롤: 258px
+[08:54:26] [DEBUG] [Idle] 마우스 이동: (207, 835)
+[08:54:27] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[08:54:30] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:54:30] [DEBUG] [Idle] 페이지 체류: 20.6 초
+[08:54:40] [DEBUG] [Mouse] 스크롤: 65px
+[08:54:40] [DEBUG] [Idle] 스크롤: 65px
+[08:54:50] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:54:53] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:54:56] [DEBUG] [Idle] 마우스 이동: (899, 1106)
+[08:54:57] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[08:54:59] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:54:59] [DEBUG] [Idle] 페이지 체류: 41.9 초
+[08:55:20] [DEBUG] [Mouse] 스크롤: 268px
+[08:55:20] [DEBUG] [Idle] 스크롤: 268px
+[08:55:41] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:55:44] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:55:46] [DEBUG] [Idle] 대기 종료
+[08:55:46] [DEBUG] [Idle] 대기 시작: 60초
+[08:55:46] [DEBUG] [Mouse] 스크롤: 42px
+[08:55:46] [DEBUG] [Idle] 스크롤: 42px
+[08:55:47] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[08:55:50] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:55:50] [DEBUG] [Idle] 페이지 체류: 33.9 초
+[08:56:07] [DEBUG] [Mouse] 스크롤: -184px
+[08:56:07] [DEBUG] [Idle] 스크롤: -184px
+[08:56:24] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:56:26] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:56:29] [DEBUG] [Mouse] 스크롤: -188px
+[08:56:29] [DEBUG] [Idle] 스크롤: -188px
+[08:56:30] [DEBUG] [Mouse] 스크롤: -129px
+[08:56:30] [DEBUG] [Idle] 스크롤: -129px
+[08:56:31] [DEBUG] [Mouse] 스크롤: -56px
+[08:56:31] [DEBUG] [Idle] 스크롤: -56px
+[08:56:32] [DEBUG] [Mouse] 스크롤: -258px
+[08:56:32] [DEBUG] [Idle] 스크롤: -258px
+[08:56:34] [DEBUG] [Idle] 마우스 이동: (593, 885)
+[08:56:36] [DEBUG] [Idle] 마우스 이동: (618, 1011)
+[08:56:38] [DEBUG] [Idle] 마우스 이동: (700, 905)
+[08:56:39] [DEBUG] [Idle] 마우스 이동: (212, 439)
+[08:56:41] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[08:56:43] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:56:43] [DEBUG] [Idle] 페이지 체류: 18.6 초
+[08:56:53] [DEBUG] [Mouse] 스크롤: 265px
+[08:56:53] [DEBUG] [Idle] 스크롤: 265px
+[08:57:02] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:57:04] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:57:07] [DEBUG] [Idle] 대기 종료
+[08:57:07] [DEBUG] [Idle] 대기 시작: 60초
+[08:57:09] [DEBUG] [Idle] 마우스 이동: (1229, 576)
+[08:57:10] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[08:57:12] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:57:12] [DEBUG] [Idle] 페이지 체류: 53.1 초
+[08:57:39] [DEBUG] [Mouse] 스크롤: -121px
+[08:57:39] [DEBUG] [Idle] 스크롤: -121px
+[08:58:05] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:58:08] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:58:10] [DEBUG] [Idle] 대기 종료
+[08:58:10] [DEBUG] [Idle] 대기 시작: 41초
+[08:58:10] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[08:58:13] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:58:13] [DEBUG] [Idle] 페이지 체류: 31.6 초
+[08:58:29] [DEBUG] [Mouse] 스크롤: 4px
+[08:58:29] [DEBUG] [Idle] 스크롤: 4px
+[08:58:44] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[08:58:47] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:58:52] [DEBUG] [Idle] 대기 종료
+[08:58:52] [INFO] [Orchestrator] ⏰ 대기 완료 - 다음 채굴 시작
+[08:58:52] [DEBUG] [Orchestrator] >>> _tryMining() 종료
+[08:58:52] [DEBUG] [Orchestrator] _tryMining() 반환: true
+[08:58:52] [DEBUG] [Orchestrator] === 메인 루프 시작 ===
+[08:58:52] [DEBUG] [Orchestrator] 채굴 모드 ON - _tryMining() 호출
+[08:58:52] [DEBUG] [Orchestrator] >>> _tryMining() 시작
+[08:58:52] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[08:58:52] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[08:58:55] [INFO] [Browser] 페이지 로드 완료 (2.8초 대기)
+[08:58:58] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[08:58:58] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[08:58:58] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[08:58:58] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[08:58:58] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[08:58:58] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 62.9%)
+[08:58:58] [INFO] [Mine] 광산 이동: 포토시 은광
+[08:59:00] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (554, 847)
+[08:59:04] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[08:59:04] [DEBUG] [Orchestrator] 광산 이동 결과: 성공
+[08:59:04] [DEBUG] [Orchestrator] 채굴 버튼 클릭 시도...
+[08:59:04] [DEBUG] [Mine] 장비 이미 선택됨: BAGGER288
+[08:59:04] [DEBUG] [Mine] 현재 마지막 댓글 ID: c_207660854
+[08:59:06] [DEBUG] [Mouse] 클릭: button.raid_mining#btn_submit (1091, 1138)
+[08:59:10] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 4회)
+[08:59:11] [DEBUG] [Mine] 새 댓글 감지: c_207661406 (이전: c_207660854)
+[08:59:11] [DEBUG] [Mine] 최근 채굴 기록: 포토시에서 배거288 채굴 성공 (채굴 보상 : 1422)
+[08:59:11] [INFO] [Mine] 채굴 성공! 순이익: 422 MP (보상 1422 - 사용료 1000, 총 1178 MP)
+[08:59:11] [DEBUG] [Orchestrator] 채굴 결과: success=true, reward=422
+[08:59:11] [INFO] [Orchestrator] 대기 시작: 6분 45초 (4회 채굴 완료)
+[08:59:11] [DEBUG] [Idle] 대기 시작: 60초
+[08:59:12] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[08:59:14] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[08:59:14] [DEBUG] [Idle] 페이지 체류: 53.1 초
+[08:59:41] [DEBUG] [Mouse] 스크롤: 276px
+[08:59:41] [DEBUG] [Idle] 스크롤: 276px
+[09:00:07] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:00:11] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:00:13] [DEBUG] [Idle] 대기 종료
+[09:00:13] [DEBUG] [Idle] 대기 시작: 60초
+[09:00:13] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[09:00:16] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:00:16] [DEBUG] [Idle] 페이지 체류: 39.4 초
+[09:00:36] [DEBUG] [Mouse] 스크롤: 71px
+[09:00:36] [DEBUG] [Idle] 스크롤: 71px
+[09:00:55] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:00:58] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:01:00] [DEBUG] [Idle] 마우스 이동: (669, 1233)
+[09:01:02] [DEBUG] [Idle] 마우스 이동: (789, 912)
+[09:01:03] [DEBUG] [Mouse] 스크롤: 287px
+[09:01:03] [DEBUG] [Idle] 스크롤: 287px
+[09:01:04] [DEBUG] [Mouse] 스크롤: 34px
+[09:01:04] [DEBUG] [Idle] 스크롤: 34px
+[09:01:05] [DEBUG] [Mouse] 스크롤: 241px
+[09:01:05] [DEBUG] [Idle] 스크롤: 241px
+[09:01:07] [DEBUG] [Mouse] 스크롤: 163px
+[09:01:07] [DEBUG] [Idle] 스크롤: 163px
+[09:01:08] [DEBUG] [Mouse] 스크롤: -130px
+[09:01:08] [DEBUG] [Idle] 스크롤: -130px
+[09:01:13] [DEBUG] [Idle] 대기 종료
+[09:01:13] [DEBUG] [Idle] 대기 시작: 60초
+[09:01:15] [DEBUG] [Idle] 마우스 이동: (643, 466)
+[09:01:16] [DEBUG] [Mouse] 스크롤: 35px
+[09:01:16] [DEBUG] [Idle] 스크롤: 35px
+[09:01:18] [DEBUG] [Idle] 마우스 이동: (1147, 138)
+[09:01:19] [DEBUG] [Mouse] 스크롤: 179px
+[09:01:19] [DEBUG] [Idle] 스크롤: 179px
+[09:01:20] [DEBUG] [Mouse] 스크롤: -143px
+[09:01:20] [DEBUG] [Idle] 스크롤: -143px
+[09:01:21] [DEBUG] [Mouse] 스크롤: -229px
+[09:01:21] [DEBUG] [Idle] 스크롤: -229px
+[09:01:22] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[09:01:25] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:01:25] [DEBUG] [Idle] 페이지 체류: 34.3 초
+[09:01:42] [DEBUG] [Mouse] 스크롤: -14px
+[09:01:42] [DEBUG] [Idle] 스크롤: -14px
+[09:01:59] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:02:02] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:04] [DEBUG] [Mouse] 스크롤: -67px
+[09:02:04] [DEBUG] [Idle] 스크롤: -67px
+[09:02:06] [DEBUG] [Idle] 마우스 이동: (629, 623)
+[09:02:07] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[09:02:09] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:09] [DEBUG] [Idle] 페이지 체류: 14.0 초
+[09:02:16] [DEBUG] [Mouse] 스크롤: 240px
+[09:02:16] [DEBUG] [Idle] 스크롤: 240px
+[09:02:23] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:02:26] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:28] [DEBUG] [Idle] 대기 종료
+[09:02:28] [DEBUG] [Idle] 대기 시작: 60초
+[09:02:28] [DEBUG] [Mouse] 스크롤: -171px
+[09:02:28] [DEBUG] [Idle] 스크롤: -171px
+[09:02:29] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[09:02:32] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:32] [DEBUG] [Idle] 페이지 체류: 19.2 초
+[09:02:42] [DEBUG] [Mouse] 스크롤: -30px
+[09:02:42] [DEBUG] [Idle] 스크롤: -30px
+[09:02:51] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:02:54] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:56] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[09:02:58] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:02:58] [DEBUG] [Idle] 페이지 체류: 50.0 초
+[09:03:23] [DEBUG] [Mouse] 스크롤: -127px
+[09:03:23] [DEBUG] [Idle] 스크롤: -127px
+[09:03:48] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:03:51] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:03:53] [DEBUG] [Idle] 대기 종료
+[09:03:53] [DEBUG] [Idle] 대기 시작: 60초
+[09:03:54] [DEBUG] [Mouse] 스크롤: -181px
+[09:03:54] [DEBUG] [Idle] 스크롤: -181px
+[09:03:55] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%99%84%EA%B2%B0%EC%9B%B9%ED%88%B0 
+[09:03:57] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:03:57] [DEBUG] [Idle] 페이지 체류: 19.3 초
+[09:04:07] [DEBUG] [Mouse] 스크롤: 255px
+[09:04:07] [DEBUG] [Idle] 스크롤: 255px
+[09:04:16] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:04:19] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:04:23] [DEBUG] [Idle] 마우스 이동: (395, 908)
+[09:04:25] [DEBUG] [Idle] 마우스 이동: (334, 1143)
+[09:04:26] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%84%B1%EC%9D%B8%EC%9B%B9%ED%88%B0 
+[09:04:28] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:04:28] [DEBUG] [Idle] 페이지 체류: 10.2 초
+[09:04:34] [DEBUG] [Mouse] 스크롤: 61px
+[09:04:34] [DEBUG] [Idle] 스크롤: 61px
+[09:04:39] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:04:41] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:04:44] [DEBUG] [Idle] 마우스 이동: (657, 1029)
+[09:04:45] [DEBUG] [Mouse] 스크롤: 248px
+[09:04:45] [DEBUG] [Idle] 스크롤: 248px
+[09:04:48] [DEBUG] [Idle] 마우스 이동: (122, 1244)
+[09:04:53] [DEBUG] [Idle] 대기 종료
+[09:04:53] [DEBUG] [Idle] 대기 시작: 60초
+[09:04:54] [DEBUG] [Idle] 마우스 이동: (656, 1086)
+[09:04:55] [DEBUG] [Mouse] 스크롤: 20px
+[09:04:55] [DEBUG] [Idle] 스크롤: 20px
+[09:04:57] [DEBUG] [Idle] 마우스 이동: (195, 977)
+[09:04:59] [DEBUG] [Mouse] 스크롤: -146px
+[09:04:59] [DEBUG] [Idle] 스크롤: -146px
+[09:05:00] [DEBUG] [Mouse] 스크롤: 230px
+[09:05:00] [DEBUG] [Idle] 스크롤: 230px
+[09:05:02] [DEBUG] [Idle] 마우스 이동: (299, 193)
+[09:05:04] [DEBUG] [Mouse] 스크롤: -85px
+[09:05:04] [DEBUG] [Idle] 스크롤: -85px
+[09:05:06] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[09:05:08] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:05:08] [DEBUG] [Idle] 페이지 체류: 15.4 초
+[09:05:16] [DEBUG] [Mouse] 스크롤: -178px
+[09:05:16] [DEBUG] [Idle] 스크롤: -178px
+[09:05:24] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:05:26] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:05:29] [DEBUG] [Mouse] 스크롤: -124px
+[09:05:29] [DEBUG] [Idle] 스크롤: -124px
+[09:05:31] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[09:05:33] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:05:33] [DEBUG] [Idle] 페이지 체류: 38.8 초
+[09:05:52] [DEBUG] [Mouse] 스크롤: 135px
+[09:05:52] [DEBUG] [Idle] 스크롤: 135px
+[09:06:12] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:06:14] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:06:17] [DEBUG] [Idle] 대기 종료
+[09:06:17] [INFO] [Orchestrator] ⏰ 대기 완료 - 다음 채굴 시작
+[09:06:17] [DEBUG] [Orchestrator] >>> _tryMining() 종료
+[09:06:17] [DEBUG] [Orchestrator] _tryMining() 반환: true
+[09:06:17] [DEBUG] [Orchestrator] === 메인 루프 시작 ===
+[09:06:17] [DEBUG] [Orchestrator] 채굴 모드 ON - _tryMining() 호출
+[09:06:17] [DEBUG] [Orchestrator] >>> _tryMining() 시작
+[09:06:17] [INFO] [Mine] 광산 목록 페이지 이동: https://newtoki469.com/mine
+[09:06:17] [INFO] [Browser] 이동 중: https://newtoki469.com/mine
+[09:06:23] [INFO] [Browser] 페이지 로드 완료 (4.8초 대기)
+[09:06:25] [INFO] [Mine] 광산 목록 페이지 로드 완료
+[09:06:25] [DEBUG] [Mine] 광산 목록: 총 15개, 살아있는 광산 1개
+[09:06:25] [DEBUG] [Mine]   [0] 포토시 은광 | isAlive: true | endDate: ""
+[09:06:25] [DEBUG] [Mine]   [1] 사도 금광 | isAlive: false | endDate: "2026-01-04 00:56:01"
+[09:06:25] [DEBUG] [Mine]   [2] 타우토나 금광 | isAlive: false | endDate: "2026-01-03 20:43:01"
+[09:06:25] [INFO] [Mine] 살아있는 광산 발견: 포토시 은광 (진행도: 61.9%)
+[09:06:25] [INFO] [Mine] 광산 이동: 포토시 은광
+[09:06:26] [DEBUG] [Mouse] 클릭: a.item-subject[href="https://newtoki469.com/mine/207635082"] (550, 855)
+[09:06:30] [INFO] [Mine] 광산 "포토시 은광" 페이지 로드 완료
+[09:06:30] [DEBUG] [Orchestrator] 광산 이동 결과: 성공
+[09:06:30] [DEBUG] [Orchestrator] 채굴 버튼 클릭 시도...
+[09:06:30] [DEBUG] [Mine] 장비 이미 선택됨: BAGGER288
+[09:06:30] [DEBUG] [Mine] 현재 마지막 댓글 ID: c_207661406
+[09:06:31] [DEBUG] [Mouse] 클릭: button.raid_mining#btn_submit (1088, 1152)
+[09:06:35] [INFO] [Mine] 채굴 버튼 클릭 성공 (총 5회)
+[09:06:36] [DEBUG] [Mine] 새 댓글 감지: c_207661966 (이전: c_207661406)
+[09:06:36] [DEBUG] [Mine] 최근 채굴 기록: 포토시에서 배거288 채굴 성공 (채굴 보상 : 1325)
+[09:06:36] [INFO] [Mine] 채굴 성공! 순이익: 325 MP (보상 1325 - 사용료 1000, 총 1503 MP)
+[09:06:36] [DEBUG] [Orchestrator] 채굴 결과: success=true, reward=325
+[09:06:36] [INFO] [Orchestrator] 대기 시작: 5분 15초 (5회 채굴 완료)
+[09:06:36] [DEBUG] [Idle] 대기 시작: 60초
+[09:06:37] [DEBUG] [Idle] 마우스 이동: (812, 413)
+[09:06:38] [DEBUG] [Mouse] 스크롤: 244px
+[09:06:38] [DEBUG] [Idle] 스크롤: 244px
+[09:06:40] [DEBUG] [Idle] 마우스 이동: (227, 1147)
+[09:06:41] [DEBUG] [Mouse] 스크롤: -288px
+[09:06:41] [DEBUG] [Idle] 스크롤: -288px
+[09:06:42] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[09:06:44] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:06:44] [DEBUG] [Idle] 페이지 체류: 24.6 초
+[09:06:57] [DEBUG] [Mouse] 스크롤: 188px
+[09:06:57] [DEBUG] [Idle] 스크롤: 188px
+[09:07:09] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:07:11] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:07:14] [DEBUG] [Mouse] 스크롤: 227px
+[09:07:14] [DEBUG] [Idle] 스크롤: 227px
+[09:07:15] [DEBUG] [Mouse] 스크롤: -221px
+[09:07:15] [DEBUG] [Idle] 스크롤: -221px
+[09:07:17] [DEBUG] [Idle] 마우스 이동: (287, 427)
+[09:07:19] [DEBUG] [Idle] 마우스 이동: (372, 1041)
+[09:07:20] [DEBUG] [Mouse] 스크롤: -58px
+[09:07:20] [DEBUG] [Idle] 스크롤: -58px
+[09:07:21] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
+[09:07:24] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:07:24] [DEBUG] [Idle] 페이지 체류: 31.9 초
+[09:07:40] [DEBUG] [Mouse] 스크롤: 209px
+[09:07:40] [DEBUG] [Idle] 스크롤: 209px
+[09:07:56] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:07:58] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:08:01] [DEBUG] [Idle] 대기 종료
+[09:08:01] [DEBUG] [Idle] 대기 시작: 60초
+[09:08:01] [DEBUG] [Mouse] 스크롤: 181px
+[09:08:01] [DEBUG] [Idle] 스크롤: 181px
+[09:08:03] [DEBUG] [Idle] 마우스 이동: (945, 1428)
+[09:08:05] [DEBUG] [Mouse] 스크롤: -296px
+[09:08:05] [DEBUG] [Idle] 스크롤: -296px
+[09:08:06] [DEBUG] [Mouse] 스크롤: -164px
+[09:08:06] [DEBUG] [Idle] 스크롤: -164px
+[09:08:07] [DEBUG] [Idle] 마우스 이동: (272, 341)
+[09:08:09] [DEBUG] [Mouse] 스크롤: 204px
+[09:08:09] [DEBUG] [Idle] 스크롤: 204px
+[09:08:10] [INFO] [Idle] 🔀 랜덤 페이지 방문: /humor 
+[09:08:12] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:08:12] [DEBUG] [Idle] 페이지 체류: 17.0 초
+[09:08:21] [DEBUG] [Mouse] 스크롤: 189px
+[09:08:21] [DEBUG] [Idle] 스크롤: 189px
+[09:08:29] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:08:32] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:08:34] [DEBUG] [Mouse] 스크롤: 278px
+[09:08:34] [DEBUG] [Idle] 스크롤: 278px
+[09:08:35] [INFO] [Idle] 🔀 랜덤 페이지 방문: /webtoon?toon=%EC%9D%BC%EB%B0%98%EC%9B%B9%ED%88%B0 
+[09:08:38] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:08:38] [DEBUG] [Idle] 페이지 체류: 13.9 초
+[09:08:45] [DEBUG] [Mouse] 스크롤: -201px
+[09:08:45] [DEBUG] [Idle] 스크롤: -201px
+[09:08:52] [INFO] [Idle] ↩️ 원래 페이지 복귀: https://newtoki469.com/mine/207635082...
+[09:08:54] [DEBUG] [Idle] 클라우드플레어 아님 - 바로 진행
+[09:09:01] [DEBUG] [Idle] 대기 종료
+[09:09:01] [DEBUG] [Idle] 대기 시작: 60초
+[09:09:01] [DEBUG] [Mouse] 스크롤: 259px
+[09:09:01] [DEBUG] [Idle] 스크롤: 259px
+[09:09:03] [INFO] [Idle] 🔀 랜덤 페이지 방문: /toki_free 
