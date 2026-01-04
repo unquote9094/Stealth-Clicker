@@ -123,8 +123,12 @@ if (process.stdin.isTTY) {
 process.stdin.on('keypress', async (str, key) => {
     // Ctrl+C 처리
     if (key.ctrl && key.name === 'c') {
-        console.log('\n\n👋 종료 중...');
-        process.exit(0);
+        console.log('\n\n👋 종료 중... (리포트 생성)');
+        if (globalScheduler) {
+            globalScheduler.stop(); // 정상 종료 → 리포트 생성됨
+        }
+        // Scheduler.run()이 종료될 때까지 기다림 (finally 블록에서 처리)
+        return;
     }
 
     // 's' 키: 페이지 저장
@@ -134,15 +138,21 @@ process.stdin.on('keypress', async (str, key) => {
 
     // 'q' 키: 종료
     if (key.name === 'q') {
-        console.log('\n\n👋 종료 중...');
-        process.exit(0);
+        console.log('\n\n👋 종료 중... (리포트 생성)');
+        if (globalScheduler) {
+            globalScheduler.stop();
+        }
     }
 });
 
-// Ctrl+C 처리 (fallback)
+// Ctrl+C 처리 (fallback - 프로세스 레벨)
 process.on('SIGINT', async () => {
-    console.log('\n\n👋 종료 중...');
-    process.exit(0);
+    console.log('\n\n👋 종료 중... (리포트 생성)');
+    if (globalScheduler) {
+        globalScheduler.stop();
+    }
+    // Scheduler가 정상 종료되면 main()의 finally 블록에서 브라우저 닫힘
 });
 
 main();
+
